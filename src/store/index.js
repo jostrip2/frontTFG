@@ -16,13 +16,11 @@ export default createStore({
   },
   actions: {
     async initialLoad(context) {
-      /*
       if (localStorage.token) {
           Vue.axios.defaults.headers.common.Authorization = "Bearer ${localStorage.token}";
           const res = await Vue.axios.get("/api/auth/currentUser");
           context.commit("CURRENT_USER_FETCH", res.data.user);
       }
-      */
     },
   },
   modules: {}, 
