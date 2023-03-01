@@ -3,6 +3,7 @@
         <div v-if="loading">Loading...</div>
         <div v-if="!loading && !error">Welcome</div>
         <div v-if="!loading && error">Something went wrong</div>
+        <p>{{ loading }} -- {{ error }} -- {{ err }}</p>
     </div>
 </template>
 
@@ -15,21 +16,23 @@ export default {
     data() {
         return{
             loading: true,
-            error: false
+            error: false,
+            err: ""
         }
     },
 
     methods: {
-        ...mapActions(["inirialLoad"])
+        ...mapActions(["initialLoad"])
     },
 
     async mounted() {
         try {
             await this.initialLoad();
             this.loading = false;
-        } catch (error) {
+        } catch (err) {
             this.loading = false;
             this.error = true;
+            this.err = err;
         }
     }
 }
