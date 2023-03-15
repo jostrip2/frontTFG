@@ -1,39 +1,30 @@
 <template>
-    <div>
-        <div v-if="loading">Loading...</div>
-        <div v-if="!loading && !error">Welcome</div>
-        <div v-if="!loading && error">Something went wrong</div>
-        <p>{{ loading }} -- {{ error }} -- {{ err }}</p>
+    <div id="app">
+        <NavBar />
+        <router-view />
     </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { RouterLink, RouterView } from 'vue-router';
+import NavBar from '@/components/NavBar.vue'
 
 export default {
     name: "App",
-
-    data() {
-        return{
-            loading: true,
-            error: false,
-            err: ""
-        }
-    },
-
-    methods: {
-        ...mapActions(["initialLoad"])
-    },
-
-    async mounted() {
-        try {
-            await this.initialLoad();
-            this.loading = false;
-        } catch (err) {
-            this.loading = false;
-            this.error = true;
-            this.err = err;
-        }
+    components: {
+        RouterLink,
+        RouterView,
+        NavBar
     }
 }
 </script>
+
+<style>
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+}
+</style>
