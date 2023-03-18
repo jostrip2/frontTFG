@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <v-toolbar dark prominent class="container-fluid">
-            <v-toolbar-title>Vuetify</v-toolbar-title>
+    <div id="nav">
+        <v-toolbar class="container-fluid">
+            <v-toolbar-title>FisioApp</v-toolbar-title>
             <span v-if="isLoggedIn">
                 <a @click="logout">Logout</a>
             </span>
@@ -25,21 +25,9 @@ export default {
     },
 }
 </script>
+
 <style>
 #nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-a:hover {
-    cursor: pointer;
-}
-
-#nav a.router-link-exact-active {
-    color: #42b983;
+    padding: 30px, 30px, 30px, 0px;
 }
 </style>

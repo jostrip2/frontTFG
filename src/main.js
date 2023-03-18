@@ -21,6 +21,7 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.VUE_APP_LOCAL_API_URL;
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
+/*
 axios.interceptors.response.use(undefined, function (error) {
     if (error) {
         const originalRequest = error.config;
@@ -31,9 +32,7 @@ axios.interceptors.response.use(undefined, function (error) {
         }
     }
 });
-
-
-
+*/
 createApp(App).use(store)
     .use(router)
     .use(VueAxios, axios)
