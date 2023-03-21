@@ -1,20 +1,22 @@
 <template>
     <section>
         <div class="container">
-            <form @submit.prevent="login">
-                <h2>Login</h2>
-                <div class="inputbox">
-                    <input type="text" name="username" v-model="user.username" />
-                    <label for="username">Username</label>
-                </div>
-                <div class="inputbox">
-                    <input type="password" name="password" v-model="user.password" />
-                    <label for="password">Password</label>
-                </div>
-                <button>Login</button>
-            </form>
+            <div class="contForm">
+                <form @submit.prevent="login">
+                    <h2>Identifica't</h2>
+                    <div class="inputbox">
+                        <v-text-field v-model="user.username" type="text" label="Nom d'usuari"
+                            variant="underlined"></v-text-field>
+                    </div>
+                    <div class="inputbox">
+                        <v-text-field v-model="user.password" type="password" label="Contrasenya"
+                            variant="underlined"></v-text-field>
+                    </div>
+                    <button>Identificar-se</button>
+                </form>
+            </div>
+            <p v-if="showError" class="error">Nom d'usuari o contrasenya incorrectes</p>
         </div>
-        <p v-if="showError" id="error">Username or Password is incorrect</p>
     </section>
 </template>
 
@@ -25,28 +27,31 @@ export default {
     data() {
         return {
             user: {
-                username: "user1",
-                password: "pass"
+                username: "",
+                password: ""
             },
             showError: false
         };
     },
     methods: {
         login() {
-            //let url = process.env.VUE_APP_API_URL + "/users/signIn";
+            //const url = process.env.VUE_APP_API_URL + "/users/signIn";
             const url = "http://localhost:8080/users/signIn";
-            this.axios.post(url, this.user, {
-                headers: {
-                    "Access-Control-Allow-Origin": "*"
-                }
-            })
+            this.axios.post(url, this.user)
                 .then(response => {
-                    if (response.status == 200 && response.data) {
+                    if (response.status == 200 && response.data.token && response.data.rol) {
+                        const user = {
+                            username: this.user.username,
+                            token: response.data.token,
+                            rol: response.data.rol
+                        }
+                        this.$store.commit('setUser', user)
                         this.$router.push("/home")
                     }
                 })
                 .catch(error => {
                     console.log(error);
+                    this.user.password = ""
                     this.showError = true
                 })
         },
@@ -55,43 +60,59 @@ export default {
 </script>
 
 <style scoped>
-* {
-    box-sizing: border-box;
-}
-
 section {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
+    min-height: 100vh;
     width: 100%;
+    background: url('../assets/background.jpg');
+    background-position: center;
+    background-size: 100% 100%;
 }
 
 .container {
     position: relative;
     width: 400px;
-    height: 400px;
+    height: 350px;
+    background: transparent;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
     border: 2px solid;
-    display: flex;
+
     justify-content: center;
     align-items: center;
+    border: solid #fff;
 }
 
 h2 {
     font-size: 2em;
     text-align: center;
+    color: #fff;
+}
+
+.contForm {
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+v-text-field {
+    color: #fff;
 }
 
 .inputbox {
     position: relative;
-    margin: 30px 0;
+    margin: 10px 0;
     width: 310px;
-    border-bottom: 2px solid;
+    color: #fff;
 }
 
 .inputbox label {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 5px;
     transform: translateY(-50%);
     pointer-events: none;
@@ -110,6 +131,11 @@ input:valid~label {
     border: none;
     outline: none;
     background: transparent;
+    color: #fff;
+}
+
+.inputbox label {
+    color: #fff
 }
 
 button {
@@ -121,9 +147,12 @@ button {
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
+    color: #fff;
 }
 
-#error {
-    color: red;
+.error {
+    position: relative;
+    margin-top: 10px;
+    color: rgb(255, 0, 0);
 }
 </style>
