@@ -5,13 +5,15 @@
                 <v-app-bar v-if="!isLogin" class="justify-left" color="blue-darken-3">
                     <v-toolbar-title class="title">FisioApp</v-toolbar-title>
 
-                    <v-btn v-if="isAdmin">Seccio</v-btn>
-                    <p>|</p>
-                    <v-btn v-if="isAdmin">Seccio</v-btn>
-                    <p>|</p>
-                    <v-btn v-if="isAdmin">Seccio</v-btn>
+                    <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }">Usuaris</v-btn>
+                    <p v-if="isAdmin">|</p>
+                    <v-btn v-if="isAdmin">Videos</v-btn>
 
                     <v-spacer></v-spacer>
+                    <v-btn @click="veureMissatges">Missatges</v-btn>
+                    <p>|</p>
+                    <v-btn @click="veurePerfil">Perfil</v-btn>
+                    <p>|</p>
                     <v-btn @click="logout">Tancar sessió</v-btn>
                 </v-app-bar>
 
@@ -33,12 +35,15 @@ export default {
     },
     data() {
         return {
-
+            itemsVideos: [
+                { title: 'Cercar videos', to: "" },
+                { title: 'Assignar videos', to: "" }
+            ],
         }
     },
     computed: {
         isLogin() {
-            return this.$route.name === 'Login'
+            return this.$route.name === 'LoginView'
         },
 
         isLoggedIn() {
@@ -51,8 +56,16 @@ export default {
     },
     methods: {
         logout() {
-            this.$store.dispatch('logOut')
+            this.$store.commit('logOut')
             this.$router.push('/')
+        },
+
+        veurePerfil() {
+
+        },
+
+        veureMissatges() {
+
         }
     },
 }

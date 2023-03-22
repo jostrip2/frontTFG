@@ -1,5 +1,4 @@
 import Vuex from "vuex";
-import auth from './modules/auth';
 
 export default new Vuex.Store({
   state: {
@@ -8,6 +7,10 @@ export default new Vuex.Store({
       token: "",
       rol: ""
     },
+    apiUrl: "https://fisioapi.onrender.com/api",
+    apiUrlDev: "http://localhost:3000/api",
+    frontUrl: "https://fisiofront.onrender.com",
+    frontUrlDev: "http://localhost:8080"
   },
   getters: {
     isAuthenticated(state) {
@@ -17,10 +20,6 @@ export default new Vuex.Store({
     isAdmin(state) {
       return state.user.rol == "admin"
     },
-
-    getToken(state) {
-      return state.user.token
-    }
   },
   mutations: {
     setUser(state, user) {
@@ -36,5 +35,5 @@ export default new Vuex.Store({
   },
   actions: {
   },
-  modules: { auth },
+  modules: {},
 });

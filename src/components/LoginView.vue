@@ -22,7 +22,7 @@
 
 <script>
 export default {
-    name: "Login",
+    name: "LoginView",
     components: {},
     data() {
         return {
@@ -35,8 +35,7 @@ export default {
     },
     methods: {
         login() {
-            //const url = process.env.VUE_APP_API_URL + "/users/signIn";
-            const url = "http://localhost:8080/users/signIn";
+            const url = this.$store.state.apiUrlDev + "/users/signIn";
             this.axios.post(url, this.user)
                 .then(response => {
                     if (response.status == 200 && response.data.token && response.data.rol) {
@@ -46,7 +45,12 @@ export default {
                             rol: response.data.rol
                         }
                         this.$store.commit('setUser', user)
-                        this.$router.push("/home")
+                        if (user.rol == 'admin') {
+                            this.$router.push("/users")
+                        }
+                        else {
+                            this.$router.push("/home")
+                        }
                     }
                 })
                 .catch(error => {

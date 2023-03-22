@@ -11,14 +11,19 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { aliases, mdi } from 'vuetify/lib/iconsets/mdi'
+import "@mdi/font/css/materialdesignicons.css"
 
 const vuetify = createVuetify({
     components,
-    directives
+    directives,
+    icons: {
+        defaultSet: 'mdi',
+        aliases,
+        sets: { mdi }
+    }
 })
 
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = process.env.VUE_APP_LOCAL_API_URL;
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
 createApp(App).use(store)
