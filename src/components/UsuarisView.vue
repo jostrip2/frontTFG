@@ -1,11 +1,13 @@
 <template>
     <div class="search">
-        <v-row class="filter">
-            <v-col cols="12">
+        <v-row class="filter" justify="space-between">
+            <v-col cols="6">
                 <v-text-field id="inputSearch" v-model="this.usernameSearch" variant="solo" label="Cercar usuari ..."
                     single-line @keyup="searchUser" hide-details />
             </v-col>
-
+            <v-col cols="2">
+                <CrearUserComp @usuariCreat='postUsuariCreat' />
+            </v-col>
         </v-row>
         <v-row class="filter">
             <v-col cols="2" class="filter">
@@ -30,28 +32,58 @@
                 </tr>
             </thead>
             <tbody v-if="users.length > 0">
-                <tr v-for="user in users" :key="user.name" class="text-left">
+                <tr v-for="user in users" :key="user.username" class="text-left">
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.numMobil }}</td>
                     <td>{{ user.rol }}</td>
-                    <td>Accions</td>
+                    <td>
+                        <v-icon size="small" class="me-2" @click="editUser(user)">
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon size="small" @click="deleteItem(user)">
+                            mdi-delete
+                        </v-icon>
+                    </td>
                 </tr>
             </tbody>
         </v-table>
     </div>
+    <EditarUserComp v-model="this.editarDialog" :selectedUser="this.selectedUser" @editedUser="refresh"></EditarUserComp>
+    <v-snackbar v-model="showSnack" :timeout=3000>
+        {{ message }}
+
+        <template v-slot:actions>
+            <v-btn color="blue" variant="text" @click="showSnack = false">
+                Close
+            </v-btn>
+        </template>
+    </v-snackbar>
 </template>
 
 <script>
+import CrearUserComp from './CrearUserComp.vue'
+import EditarUserComp from './EditarUserComp.vue'
+
 export default {
     name: "UsuarisView",
+    components: {
+        CrearUserComp,
+        EditarUserComp
+    },
+    emits: ['usuariCreat', 'editedUser'],
     data() {
         return {
             allUsers: [],
             users: [],
             usernameSearch: '',
             checkAdmin: false,
-            checkClient: false
+            checkClient: false,
+            dialog: false,
+            editarDialog: false,
+            message: '',
+            showSnack: false,
+            selectedUser: {}
         };
     },
     methods: {
@@ -82,9 +114,29 @@ export default {
         },
 
         checkRol(rol) {
-            const isAdmin = rol == 'admin'
-            const isClient = rol == 'client'
+            const isAdmin = rol == 'Administrador'
+            const isClient = rol == 'Client'
             return (isAdmin && this.checkAdmin) || (isClient && this.checkClient) || (!this.checkAdmin && !this.checkClient)
+        },
+
+        refresh() {
+            this.getUsers()
+            this.searchUser()
+        },
+
+        postUsuariCreat(message) {
+            this.refresh()
+            this.showMessage(message)
+        },
+
+        showMessage(message) {
+            this.message = message
+            this.showSnack = true
+        },
+
+        editUser(user) {
+            this.selectedUser = user
+            this.editarDialog = true
         }
     },
 
@@ -114,6 +166,11 @@ export default {
 
 #checkClient {
     padding-bottom: 20px;
+}
+
+.textInput {
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .list {
