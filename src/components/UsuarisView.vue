@@ -56,7 +56,7 @@ export default {
     },
     methods: {
         getUsers() {
-            const url = this.$store.state.apiUrlDev + "/users";
+            const url = process.env.VUE_APP_APIURL + "/users";
             this.axios.get(url)
                 .then(response => {
                     if (response.status == 200 && response.data) {

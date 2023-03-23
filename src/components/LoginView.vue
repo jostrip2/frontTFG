@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         login() {
-            const url = this.$store.state.apiUrlDev + "/users/signIn";
+            const url = process.env.VUE_APP_APIURL + "/users/signIn";
             this.axios.post(url, this.user)
                 .then(response => {
                     if (response.status == 200 && response.data.token && response.data.rol) {

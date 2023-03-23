@@ -6,11 +6,7 @@ export default new Vuex.Store({
       username: "",
       token: "",
       rol: ""
-    },
-    apiUrl: "https://fisioapi.onrender.com/api",
-    apiUrlDev: "http://localhost:3000/api",
-    frontUrl: "https://fisiofront.onrender.com",
-    frontUrlDev: "http://localhost:8080"
+    }
   },
   getters: {
     isAuthenticated(state) {
