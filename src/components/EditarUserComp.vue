@@ -1,146 +1,133 @@
 <template>
-    <v-icon size="small" class="me-2" @click="this.dialog = true">
-        mdi-pencil
-    </v-icon>
-    <v-dialog v-model="this.dialog" persistent width="512">
-        <v-card>
-            <v-toolbar flat color="blue-darken-3">
-                <v-btn icon="mdi-account"></v-btn>
+    <div>
+        <v-icon size="small" class="me-2" @click="this.dialog = true">
+            mdi-pencil
+            <v-tooltip top>Editar</v-tooltip>
+        </v-icon>
+        <v-dialog v-model="this.dialog" persistent width="512">
+            <v-card>
+                <v-toolbar flat color="blue-darken-3">
+                    <v-btn icon="mdi-account"></v-btn>
 
-                <v-toolbar-title class="font-weight-light">
-                    <span class="text-h5">Editar usuari</span>
-                </v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-                <v-container>
-                    <v-form fast-fail @submit.prevent ref="form">
-                        <v-text-field v-model="this.user.username" label="Nom d'usuari *" type="text" clearable
-                            required></v-text-field>
-                        <v-text-field v-model="this.user.password" label="Constrasenya *" type="password" :rules="passRules"
-                            clearable required></v-text-field>
-                        <v-text-field v-model="this.user.email" label="Email *" type="email" :rules="emailRules" clearable
-                            required></v-text-field>
-                        <v-text-field v-model="this.user.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
-                            clearable></v-text-field>
-                        <v-autocomplete v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol *"
-                            :rules="rolRules" clearable required></v-autocomplete>
-                    </v-form>
-                </v-container>
-                <small style="padding-left: 12px; color: red;">* Camp necessari</small>
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue-darken-1" variant="text" @click="closeDialog">
-                    Cancelar
+                    <v-toolbar-title class="font-weight-light">
+                        <span class="text-h5">Editar usuari</span>
+                    </v-toolbar-title>
+                </v-toolbar>
+                <v-card-text>
+                    <v-container>
+                        <v-form fast-fail @submit.prevent ref="form">
+                            <v-text-field v-model="this.user.username" label="Nom d'usuari" type="text" clearable
+                                required></v-text-field>
+                            <v-text-field v-model="this.user.email" label="Email" type="email" :rules="emailRules" clearable
+                                required></v-text-field>
+                            <v-text-field v-model="this.user.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
+                                clearable></v-text-field>
+                            <v-autocomplete v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol"
+                                :rules="rolRules" clearable required></v-autocomplete>
+                        </v-form>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue-darken-1" variant="text" @click="showDialog(false)">
+                        Cancelar
+                    </v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="validate">
+                        Editar
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-snackbar v-model="snack" :timeout=3000>
+            Formulari no correcte
+            <template v-slot:actions>
+                <v-btn color="blue" variant="text" @click="showSnack(false)">
+                    Close
                 </v-btn>
-                <v-btn color="blue-darken-1" variant="text" @click="validate">
-                    Afegir
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
-    <v-snackbar v-model="showSnack" :timeout=3000>
-        Formulari no correcte
-        <template v-slot:actions>
-            <v-btn color="blue" variant="text" @click="showSnack = false">
-                Close
-            </v-btn>
-        </template>
-    </v-snackbar>
+            </template>
+        </v-snackbar>
+    </div>
 </template>
 
 <script>
 export default {
     name: "EditarUserComp",
-    props: ["selectedUser"],
+    props: ['selectedUser'],
     data() {
         return {
             dialog: false,
-            showSnack: false,
+            snack: false,
             user: this.selectedUser,
             nameRules: [
                 value => {
-                    return !!value || 'Camp obligatori'
-                }
-            ],
-            passRules: [
-                value => {
-                    return !!value || value.length >= 8 || 'Min. 8 caràcters'
+                    if (value) return true;
+                    return 'Camp obligatori'
                 }
             ],
             emailRegex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/,
             emailRules: [
                 value => {
-                    return !value || this.emailRegex.test(value) || 'El email no té el format correcte'
+                    if (value && this.emailRegex.test(value)) return true
+                    return 'El email no té el format correcte'
                 }
             ],
             mobilRules: [
                 value => {
-                    return /^([0-9]){9}/.test(value) || 'Min. 9 números'
+                    if (/^([0-9]){9}/.test(value)) return true
+                    return 'Min. 9 números'
                 }
             ],
             rolRules: [
                 value => {
-                    return !!value || 'Camp obligatori'
+                    if (value) return true;
+                    return 'Camp obligatori'
                 }
             ]
         };
     },
-    emits: 'usuariCreat',
+    emits: 'editedUser',
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
 
             if (valid) this.modificarUsuari()
-            else this.showSnack = true
+            else this.snack = true
         },
         modificarUsuari() {
-            /*
+
             const url = process.env.VUE_APP_APIURL + "/users";
-            this.axios.post(url, this.user)
+            const user = {
+                username: this.user.username,
+                email: this.user.email,
+                numMobil: this.user.numMobil,
+                rol: this.user.rol
+            }
+            this.axios.patch(url, user)
                 .then(response => {
                     if (response.status == 200) {
-                        const message = 'Usuari afegit'
-                        this.$emit('usuariCreat', message)
+                        const message = 'Usuari modificat correctament'
+                        this.$emit('editedUser', message)
                     }
                 })
                 .catch(error => {
                     console.log(error);
-                    const message = "S'ha produit un error a l'afegir un usuari"
-                    this.$emit('usuariCreat', message)
+                    const message = "S'ha produit un error al modificar un usuari"
+                    this.$emit('editedUser', message)
                 })
-                */
-            this.closeDialog()
+            this.showDialog(false)
         },
 
-        openDialog(bool) {
+        showDialog(bool) {
             this.dialog = bool
         },
 
-        closeDialog() {
-            this.openDialog(false)
-            this.clearFields()
-        },
-
-        clearFields() {
-            this.user.username = ''
-            this.user.password = ''
-            this.user.email = ''
-            this.user.numMobil = null
-            this.user.rol = ''
+        showSnack(bool) {
+            this.snack = bool
         }
     },
     computed: {
         esViewPerfil() {
             return this.$route.name == 'PerfilView'
-        }
-    },
-    created() {
-        if (this.$route.name === 'UsuarisView') {
-            this.title = 'Afegir usuari'
-        }
-        else {
-            this.title = "Perfil d'usuari"
         }
     }
 }
