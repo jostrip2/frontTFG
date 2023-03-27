@@ -1,8 +1,12 @@
 <template>
     <div>
-        <v-icon size="small" @click="showDialog(true)">
-            mdi-delete
-        </v-icon>
+        <v-tooltip text="Eliminar" location="top">
+            <template v-slot:activator="{ props }">
+                <v-icon v-bind="props" size="default" @click="showDialog(true)">
+                    mdi-delete
+                </v-icon>
+            </template>
+        </v-tooltip>
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
@@ -13,14 +17,14 @@
                     </v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    Text explicacio
+                    Aquesta és una decisió <b>irreversible</b>. Esteu segur que voleu eliminar l'usuari?
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="showDialog(false)">
                         Cancelar
                     </v-btn>
-                    <v-btn color="blue-darken-1" variant="text" @click="eliminarUsuari">
+                    <v-btn color="red" variant="text" @click="eliminarUsuari">
                         Eliminar
                     </v-btn>
                 </v-card-actions>
@@ -36,15 +40,14 @@ export default {
     data() {
         return {
             dialog: false,
-            username: this.selectedUser,
+            user: this.selectedUser,
         };
     },
-    emits: 'deletedUser',
+    emits: ['deletedUser'],
     methods: {
 
         eliminarUsuari() {
-            console.log('eliminat');
-            /*const url = process.env.VUE_APP_APIURL + "/users" + this.username;
+            const url = process.env.VUE_APP_APIURL + "/users/" + this.user.username;
             this.axios.delete(url)
                 .then(response => {
                     if (response.status == 200) {
@@ -54,10 +57,10 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
-                    const message = "S'ha produit un error al modificar un usuari"
+                    const message = "S'ha produit un error a l'eliminar un usuari"
                     this.$emit('deletedUser', message)
                 })
-            this.showDialog(false)*/
+            this.showDialog(false)
         },
 
         showDialog(bool) {
@@ -67,3 +70,13 @@ export default {
 
 }
 </script>
+
+<style scoped>
+div {
+    padding: 5px;
+}
+
+b {
+    color: red;
+}
+</style>

@@ -6,7 +6,7 @@
                     single-line @keyup="searchUser" hide-details />
             </v-col>
             <v-col cols="2">
-                <CrearUserComp @usuariCreat='postUsuari' />
+                <CrearUserComp @createdUser='postUsuari' />
             </v-col>
         </v-row>
         <v-row class="filter">
@@ -26,7 +26,7 @@
                 <tr>
                     <th class="text-left">Username</th>
                     <th class="text-left">Email</th>
-                    <th class="text-left">Num mobil</th>
+                    <th class="text-left">Num. mòbil</th>
                     <th class="text-left">Rol</th>
                     <th class="text-left">Accions</th>
                 </tr>
@@ -39,10 +39,12 @@
                     <td>{{ user.rol }}</td>
                     <td>
                         <div class="actions">
-                            <EditarUserComp v-model="this.editarDialog" :selectedUser="user" @click="editUser(user)"
+                            <ModifyPassComp v-model="this.modPassDialog" :selectedUser="user" @click="showEditUser()">
+                            </ModifyPassComp>
+                            <EditarUserComp v-model="this.editDialog" :selectedUser="user" @click="showEditUser()"
                                 @editedUser="postUsuari">
                             </EditarUserComp>
-                            <EliminarUserComp v-model="this.editarDialog" :selectedUser="user" @click="editUser(user)"
+                            <EliminarUserComp v-model="this.deleteDialog" :selectedUser="user" @click="showDeleteUser()"
                                 @deletedUser="postUsuari">
                             </EliminarUserComp>
                         </div>
@@ -66,15 +68,17 @@
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
 import EliminarUserComp from './EliminarUserComp.vue'
+import ModifyPassComp from './ModifyPassComp.vue'
 
 export default {
     name: "UsuarisView",
     components: {
         CrearUserComp,
         EditarUserComp,
-        EliminarUserComp
+        EliminarUserComp,
+        ModifyPassComp
     },
-    emits: ['usuariCreat', 'editedUser', 'deletedUser'],
+    emits: ['createdUser', 'editedUser', 'deletedUser'],
     data() {
         return {
             allUsers: [],
@@ -82,10 +86,11 @@ export default {
             usernameSearch: '',
             checkAdmin: false,
             checkClient: false,
-            dialog: false,
-            editarDialog: false,
-            message: '',
+            editDialog: false,
+            deleteDialog: false,
+            modPassDialog: false,
             showSnack: false,
+            message: '',
             selectedUser: {}
         };
     },
@@ -126,8 +131,8 @@ export default {
         },
 
         postUsuari(message) {
-            this.refresh()
             this.showMessage(message)
+            this.refresh()
         },
 
         showMessage(message) {
@@ -135,9 +140,16 @@ export default {
             this.showSnack = true
         },
 
-        editUser(user) {
-            this.selectedUser = user
-            this.editarDialog = true
+        showEditUser() {
+            this.editDialog = true
+        },
+
+        showDeleteUser() {
+            this.deleteDialog = true
+        },
+
+        showModPassUser() {
+            this.modPassDialog = true
         },
 
         deleteUser(user) {

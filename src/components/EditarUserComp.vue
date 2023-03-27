@@ -1,9 +1,12 @@
 <template>
     <div>
-        <v-icon size="small" class="me-2" @click="this.dialog = true">
-            mdi-pencil
-            <v-tooltip top>Editar</v-tooltip>
-        </v-icon>
+        <v-tooltip text="Editar" location="top">
+            <template v-slot:activator="{ props }">
+                <v-icon v-bind="props" size="default" @click="showDialog(true)">
+                    mdi-pencil
+                </v-icon>
+            </template>
+        </v-tooltip>
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
@@ -85,7 +88,7 @@ export default {
             ]
         };
     },
-    emits: 'editedUser',
+    emits: ['editedUser'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
@@ -94,7 +97,6 @@ export default {
             else this.snack = true
         },
         modificarUsuari() {
-
             const url = process.env.VUE_APP_APIURL + "/users";
             const user = {
                 username: this.user.username,
@@ -132,3 +134,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+div {
+    padding: 5px;
+}
+</style>

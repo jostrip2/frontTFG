@@ -45,7 +45,6 @@ export default {
                             rol: response.data.rol
                         }
                         this.$store.commit('setUser', user)
-                        console.log(user.rol)
                         if (user.rol == 'Administrador') {
                             this.$router.push("/users")
                         }

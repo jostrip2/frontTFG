@@ -99,7 +99,7 @@ export default {
             ]
         };
     },
-    emits: 'usuariCreat',
+    emits: ['usuariCreat'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
@@ -112,15 +112,15 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/users";
             this.axios.post(url, this.user)
                 .then(response => {
-                    if (response.status == 200) {
+                    if (response.status == 201) {
                         const message = 'Usuari creat correctament'
-                        this.$emit('usuariCreat', message)
+                        this.$emit('createdUser', message)
                     }
                 })
                 .catch(error => {
                     console.log(error);
                     const message = "S'ha produit un error a l'afegir un usuari"
-                    this.$emit('usuariCreat', message)
+                    this.$emit('createdUser', message)
                 })
 
             this.closeDialog()
