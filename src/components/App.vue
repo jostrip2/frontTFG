@@ -3,18 +3,22 @@
         <v-card>
             <v-layout>
                 <v-app-bar v-if="!isLogin" class="justify-left" color="blue-darken-3">
-                    <v-toolbar-title class="title">FisioApp</v-toolbar-title>
+                    <div class="menuLeft">
+                        <v-toolbar-title class="title">FisioApp</v-toolbar-title>
 
-                    <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }">Usuaris</v-btn>
-                    <p v-if="isAdmin">|</p>
-                    <v-btn v-if="isAdmin">Videos</v-btn>
-
-                    <v-spacer></v-spacer>
-                    <v-btn @click="veureMissatges">Missatges</v-btn>
-                    <p>|</p>
-                    <v-btn @click="veurePerfil">Perfil</v-btn>
-                    <p>|</p>
-                    <v-btn @click="logout">Tancar sessió</v-btn>
+                        <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account"> Usuaris</v-btn>
+                        <p v-if="isAdmin">|</p>
+                        <v-btn v-if="isAdmin" prepend-icon="mdi-video">Videos</v-btn>
+                        <p v-if="isAdmin">|</p>
+                        <v-btn v-if="isAdmin" prepend-icon="mdi-video-account">Assignacions</v-btn>
+                    </div>
+                    <div class="menuRigth">
+                        <v-btn prepend-icon="mdi-email">Missatges</v-btn>
+                        <p>|</p>
+                        <v-btn @click="veurePerfil" prepend-icon="mdi-account-details">Perfil</v-btn>
+                        <p>|</p>
+                        <v-btn @click="logout" prepend-icon="mdi-power">Tancar sessió</v-btn>
+                    </div>
                 </v-app-bar>
 
                 <v-main id="content">
@@ -35,10 +39,7 @@ export default {
     },
     data() {
         return {
-            itemsVideos: [
-                { title: 'Cercar videos', to: "" },
-                { title: 'Assignar videos', to: "" }
-            ],
+
         }
     },
     computed: {
@@ -62,10 +63,6 @@ export default {
 
         veurePerfil() {
 
-        },
-
-        veureMissatges() {
-
         }
     },
 }
@@ -83,6 +80,29 @@ export default {
 v-app-bar {
     position: relative;
     justify-content: flex-start;
+}
+
+p {
+    margin-top: 5px;
+}
+
+.menuLeft {
+    display: flex;
+    margin-left: 15px;
+    margin-right: auto;
+    padding-left: 35px;
+}
+
+.title {
+    margin-right: 20px;
+    margin-top: 3px;
+}
+
+.menuRigth {
+    display: flex;
+    margin-left: auto;
+    margin-right: 15px;
+    padding-right: 35px;
 }
 
 #content {

@@ -2,7 +2,7 @@
     <div>
         <v-tooltip text="Canviar contrasenya" location="top">
             <template v-slot:activator="{ props }">
-                <v-icon v-bind="props" size="default" @click="showDialog(true)">
+                <v-icon v-bind="props" size="x-large" @click="showDialog(true)">
                     mdi-key
                 </v-icon>
             </template>

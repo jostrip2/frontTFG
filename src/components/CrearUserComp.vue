@@ -1,8 +1,12 @@
 <template>
     <div>
-        <v-btn @click="showDialog(true)">
-            Afegir Usuari
-        </v-btn>
+        <v-tooltip text="Afegir" location="top">
+            <template v-slot:activator="{ props }">
+                <v-icon v-bind="props" size="x-large" @click="showDialog(true)">
+                    mdi-plus
+                </v-icon>
+            </template>
+        </v-tooltip>
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
@@ -149,3 +153,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+div {
+    padding: 5px;
+}
+</style>

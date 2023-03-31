@@ -5,6 +5,21 @@ import App from "./components/App.vue";
 import router from "./router";
 import store from "./store/store";
 
+// PrimeVue
+import PrimeVue from 'primevue/config';
+import "primevue/resources/themes/lara-light-indigo/theme.css";     //theme
+import "primevue/resources/primevue.min.css";                       //core
+import "primeicons/primeicons.css";                                 //icons
+
+// PrimeVue components
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Menubar from 'primevue/menubar';
+import Message from 'primevue/message';
+
+
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -23,10 +38,25 @@ const vuetify = createVuetify({
     }
 })
 
+// Axios common header
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
-createApp(App).use(store)
-    .use(router)
-    .use(VueAxios, axios)
-    .use(vuetify)
-    .mount("#app");
+// App
+const app = createApp(App);
+
+app.use(store)
+app.use(router)
+app.use(VueAxios, axios)
+app.use(vuetify)
+app.use(PrimeVue)
+
+// PrimeVue components
+app.component("PButton", Button)
+app.component("InputText", InputText)
+app.component("DataTable", DataTable)
+app.component("PColumn", Column)
+app.component("MenuBar", Menubar)
+app.component("PMessage", Message)
+
+// Mount
+app.mount("#app");

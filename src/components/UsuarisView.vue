@@ -1,70 +1,56 @@
 <template>
-    <div class="search">
-        <v-row class="filter" justify="space-between">
-            <v-col cols="6">
-                <v-text-field id="inputSearch" v-model="this.usernameSearch" variant="solo" label="Cercar usuari ..."
-                    single-line @keyup="searchUser" hide-details />
-            </v-col>
-            <v-col cols="2">
-                <CrearUserComp @createdUser='postUsuari' />
-            </v-col>
-        </v-row>
-        <v-row class="filter">
-            <v-col cols="2" class="filter">
-                <div class="checks">
-                    <v-checkbox v-model="this.checkAdmin" label="Administrador" @change="searchUser"
-                        hide-details></v-checkbox>
-                    <v-checkbox id="checkClient" v-model="this.checkClient" label="Client" @change="searchUser"
-                        hide-details></v-checkbox>
-                </div>
-            </v-col>
-        </v-row>
-    </div>
     <div class="list">
-        <v-table class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="text-left">Username</th>
-                    <th class="text-left">Email</th>
-                    <th class="text-left">Num. mòbil</th>
-                    <th class="text-left">Rol</th>
-                    <th class="text-left">Accions</th>
-                </tr>
-            </thead>
-            <tbody v-if="users.length > 0">
-                <tr v-for="user in users" :key="user.id" class="text-left">
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.numMobil }}</td>
-                    <td>{{ user.rol }}</td>
-                    <td>
-                        <div class="actions">
-                            <ModifyPassComp v-model="this.modPassDialog" :selectedUser="user" @click="showEditUser()">
-                            </ModifyPassComp>
-                            <EditarUserComp v-model="this.editDialog" :selectedUser="user" @click="showEditUser()"
-                                @editedUser="postUsuari">
-                            </EditarUserComp>
-                            <EliminarUserComp v-model="this.deleteDialog" :selectedUser="user" @click="showDeleteUser()"
-                                @deletedUser="postUsuari">
-                            </EliminarUserComp>
+        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" removableSort
+            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedUser"
+            :globalFilterFields="['nomComplet', 'username']" @contextmenu="onRowRightClick">
+            <template #header>
+                <div class="listHeader">
+                    <div class="search">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText v-model="filters['global'].value" placeholder="Cercar usuari" />
+                        </span>
+                        <div class="checks">
+                            <v-checkbox v-model="this.checkAdmin" label="Administrador" @change="searchUser"
+                                hide-details></v-checkbox>
+                            <v-checkbox v-model="this.checkClient" label="Client" @change="searchUser"
+                                hide-details></v-checkbox>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
-        <v-snackbar v-model="showSnack" :timeout=3000>
-            {{ message }}
-
-            <template v-slot:actions>
-                <v-btn color="blue" variant="text" @click="showSnack = false">
-                    Close
-                </v-btn>
+                    </div>
+                    <div class="actions">
+                        <CrearUserComp @createdUser='postUsuari' />
+                        <ModifyPassComp v-if="selectedUser != null" v-model="this.modPassDialog"
+                            :selectedUser="selectedUser" @click="showEditUser()" />
+                        <EditarUserComp v-if="selectedUser != null" v-model="this.editDialog" :selectedUser="selectedUser"
+                            @click="showEditUser()" @editedUser="postUsuari" />
+                        <EliminarUserComp v-if="selectedUser != null" v-model="this.deleteDialog"
+                            :selectedUser="selectedUser" @click="showDeleteUser()" @deletedUser="postUsuari" />
+                    </div>
+                </div>
             </template>
-        </v-snackbar>
+            <template #empty> No s'han trobat usuaris. </template>
+            <PColumn field="nomComplet" sortable header="Nom" style="width: 200px;"></PColumn>
+            <PColumn field="username" sortable header="Username" style="width: 200px;"></PColumn>
+            <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
+            <PColumn field="numMobil" header="Mòbil" style="width: 200px;"></PColumn>
+            <PColumn field="rol" header="Rol" style="width: 200px;"></PColumn>
+        </DataTable>
     </div>
+
+    <v-snackbar v-model="showSnack" :timeout=3000>
+        {{ message }}
+
+        <template v-slot:actions>
+            <v-btn color="blue" variant="text" @click="showSnack = false">
+                Close
+            </v-btn>
+        </template>
+    </v-snackbar>
 </template>
 
 <script>
+import { FilterMatchMode } from 'primevue/api';
+
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
 import EliminarUserComp from './EliminarUserComp.vue'
@@ -91,7 +77,27 @@ export default {
             modPassDialog: false,
             showSnack: false,
             message: '',
-            selectedUser: {}
+            selectedUser: null,
+            filters: {
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+            },
+            contextMenu: [
+                {
+                    label: 'Editar',
+                    icon: 'pi pi-pencil',
+                    handler: () => {
+                        this.editDialog = true;
+                    }
+                },
+                {
+                    label: 'Eliminar',
+                    icon: 'pi pi-trash',
+                    handler: () => {
+                        this.deleteDialog = true;
+                    }
+                }
+            ]
+
         };
     },
     methods: {
@@ -154,10 +160,14 @@ export default {
 
         deleteUser(user) {
             console.log(user)
+        },
+
+        onRowRightClick(event) {
+            this.$refs.menu.show(event);
         }
     },
 
-    created() {
+    mounted() {
         if (!this.$store.getters.isAuthenticated || !this.$store.getters.isAdmin) {
             this.$router.push("/")
         }
@@ -167,36 +177,31 @@ export default {
 </script>
 
 <style scoped>
+.listHeader {
+    display: flex;
+    flex-direction: row;
+}
+
 .search {
-    margin: 50px 50px 0 50px;
+    display: flex;
+    margin-left: 0;
+    margin-right: auto;
+    padding: 10px;
 }
 
 .checks {
     display: flex;
-    flex-direction: row;
-}
-
-.filter {
-    max-width: 100%;
-    padding-top: 0;
-}
-
-#checkClient {
-    padding-bottom: 20px;
-}
-
-.textInput {
-    padding-top: 0;
-    padding-bottom: 0;
 }
 
 .list {
-    margin: 0 50px 0 50px;
-    border: 1px solid black;
+    margin: 50px 50px 0 50px;
+    border: 1px solid rgb(221, 221, 221);
 }
 
 .actions {
     display: flex;
-    flex-direction: row;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 10px;
 }
 </style>

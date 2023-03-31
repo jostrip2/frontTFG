@@ -2,7 +2,7 @@
     <div>
         <v-tooltip text="Editar" location="top">
             <template v-slot:activator="{ props }">
-                <v-icon v-bind="props" size="default" @click="showDialog(true)">
+                <v-icon v-bind="props" size="x-large" @click="showDialog(true)">
                     mdi-pencil
                 </v-icon>
             </template>

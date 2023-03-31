@@ -3,7 +3,7 @@
         <div class="container">
             <div class="contForm">
                 <form @submit.prevent="login">
-                    <h2>Identifica't</h2>
+                    <h2>Iniciar sessió</h2>
                     <div class="inputbox">
                         <v-text-field v-model="user.username" type="text" label="Nom d'usuari"
                             variant="underlined"></v-text-field>
@@ -12,11 +12,14 @@
                         <v-text-field v-model="user.password" type="password" label="Contrasenya"
                             variant="underlined"></v-text-field>
                     </div>
-                    <button>Identificar-se</button>
+                    <button>Entrar</button>
                 </form>
             </div>
-            <p v-if="showError" class="error">Nom d'usuari o contrasenya incorrectes</p>
+            <!-- <p v-if="showError" class="error">Nom d'usuari o contrasenya incorrectes</p> -->
+
         </div>
+        <PMessage v-if="showError" severity="error" @close="showError = false">Nom d'usuari o contrasenya incorrectes
+        </PMessage>
     </section>
 </template>
 
@@ -67,6 +70,7 @@ export default {
 section {
     position: relative;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -79,7 +83,7 @@ section {
 .container {
     position: relative;
     width: 400px;
-    height: 350px;
+    height: 300px;
     background: transparent;
     border-radius: 20px;
     backdrop-filter: blur(10px);
