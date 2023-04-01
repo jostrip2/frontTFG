@@ -19,16 +19,22 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="this.user.username" label="Nom d'usuari *" type="text" clearable
+                            <v-text-field v-model="this.user.nom" label="Nom *" type="text" :rules="nameRules" clearable
                                 required></v-text-field>
+                            <v-text-field v-model="this.user.cognoms" label="Cognoms *" type="text" :rules="nameRules"
+                                clearable required></v-text-field>
+                            <v-text-field v-model="this.user.username" label="Nom d'usuari *" type="text" :rules="nameRules"
+                                clearable required></v-text-field>
                             <v-text-field v-model="this.user.password" label="Constrasenya *" type="password"
                                 :rules="passRules" clearable required></v-text-field>
                             <v-text-field v-model="this.user.email" label="Email *" type="email" :rules="emailRules"
                                 clearable required></v-text-field>
                             <v-text-field v-model="this.user.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
                                 clearable></v-text-field>
-                            <v-autocomplete v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol *"
-                                :rules="rolRules" clearable required></v-autocomplete>
+                            <v-select v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol *"
+                                :rules="rolRules"></v-select>
+                            <v-select v-model="this.user.fisio" :items="fisios" item-title="nom" item-value="id"
+                                label="Fisioterapeuta *" :rules="rolRules" return-object></v-select>
                         </v-form>
                     </v-container>
                     <small style="padding-left: 12px; color: red;">* Camp necessari</small>
@@ -56,19 +62,22 @@
 </template>
 
 <script>
-
 export default {
     name: "CrearUserComp",
+    props: ['allFisios'],
     data() {
         return {
             dialog: false,
             snack: false,
             user: {
+                nom: '',
+                cognoms: '',
                 username: '',
                 password: '',
                 email: '',
                 numMobil: null,
-                rol: ''
+                rol: null,
+                fisio: null
             },
             nameRules: [
                 value => {
@@ -91,8 +100,8 @@ export default {
             ],
             mobilRules: [
                 value => {
-                    if (/^([0-9]){9}/.test(value)) return true
-                    return 'Min. 9 números'
+                    if (value && value?.length == 9) return true
+                    return 'Ha de ser de 9 números'
                 }
             ],
             rolRules: [
@@ -103,11 +112,10 @@ export default {
             ]
         };
     },
-    emits: ['usuariCreat'],
+    emits: ['createdUser'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
-
             if (valid) this.afegirUsuari()
             else this.snack = true
         },
@@ -140,15 +148,23 @@ export default {
         },
 
         clearFields() {
+            this.user.nom = ''
+            this.user.cognoms = ''
             this.user.username = ''
             this.user.password = ''
             this.user.email = ''
             this.user.numMobil = null
-            this.user.rol = ''
+            this.user.rol = null
+            this.user.fisio = null
         },
 
         showSnack(bool) {
             this.snack = bool
+        }
+    },
+    computed: {
+        fisios() {
+            return this.allFisios
         }
     }
 }

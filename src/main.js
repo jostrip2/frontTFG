@@ -18,6 +18,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Menubar from 'primevue/menubar';
 import Message from 'primevue/message';
+import AutoComplete from 'primevue/autocomplete';
 
 
 // Vuetify
@@ -57,6 +58,7 @@ app.component("DataTable", DataTable)
 app.component("PColumn", Column)
 app.component("MenuBar", Menubar)
 app.component("PMessage", Message)
+app.component("AutoComplete", AutoComplete)
 
 // Mount
 app.mount("#app");

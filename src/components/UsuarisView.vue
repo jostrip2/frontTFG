@@ -1,8 +1,8 @@
 <template>
     <div class="list">
-        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" removableSort
-            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedUser"
-            :globalFilterFields="['nomComplet', 'username']" @contextmenu="onRowRightClick">
+        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" :alwaysShowPaginator=false
+            removableSort tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+            v-model:selection="selectedUser" :globalFilterFields="['nomComplet', 'username']">
             <template #header>
                 <div class="listHeader">
                     <div class="search">
@@ -18,11 +18,11 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <CrearUserComp @createdUser='postUsuari' />
+                        <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
                         <ModifyPassComp v-if="selectedUser != null" v-model="this.modPassDialog"
                             :selectedUser="selectedUser" @click="showEditUser()" />
                         <EditarUserComp v-if="selectedUser != null" v-model="this.editDialog" :selectedUser="selectedUser"
-                            @click="showEditUser()" @editedUser="postUsuari" />
+                            :allFisios="getFisios" :allUsers="allUsers" @click="showEditUser()" @editedUser="postUsuari" />
                         <EliminarUserComp v-if="selectedUser != null" v-model="this.deleteDialog"
                             :selectedUser="selectedUser" @click="showDeleteUser()" @deletedUser="postUsuari" />
                     </div>
@@ -34,10 +34,10 @@
             <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
             <PColumn field="numMobil" header="Mòbil" style="width: 200px;"></PColumn>
             <PColumn field="rol" header="Rol" style="width: 200px;"></PColumn>
+            <PColumn field="Fisioterapeuta.nom" header="Fisioterapeuta" style="width: 200px;"></PColumn>
         </DataTable>
     </div>
-
-    <v-snackbar v-model="showSnack" :timeout=3000>
+    <v-snackbar v-model="showSnack">
         {{ message }}
 
         <template v-slot:actions>
@@ -112,6 +112,7 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
+                    this.showMessage(error)
                 })
         },
 
@@ -165,6 +166,18 @@ export default {
         onRowRightClick(event) {
             this.$refs.menu.show(event);
         }
+    },
+
+    computed: {
+        getFisios() {
+            var fisios = []
+            this.allUsers.forEach(user => {
+                if (user.rol == "Administrador") {
+                    fisios.push({ id: user.id, nom: user.nomComplet })
+                }
+            });
+            return fisios;
+        },
     },
 
     mounted() {

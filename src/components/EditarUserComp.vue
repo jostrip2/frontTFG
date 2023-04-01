@@ -19,15 +19,21 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="this.user.username" label="Nom d'usuari" type="text" clearable
+                            <v-text-field v-model="propUser.nom" label="Nom *" type="text" clearable
                                 required></v-text-field>
-                            <v-text-field v-model="this.user.email" label="Email" type="email" :rules="emailRules" clearable
+                            <v-text-field v-model="propUser.cognoms" label="Cognoms *" type="text" clearable
                                 required></v-text-field>
-                            <v-text-field v-model="this.user.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
+                            <v-text-field v-model="propUser.username" label="Nom d'usuari" type="text" clearable
+                                required></v-text-field>
+                            <v-text-field v-model="propUser.email" label="Email" type="email" :rules="emailRules" clearable
+                                required></v-text-field>
+                            <v-text-field v-model="propUser.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
                                 clearable></v-text-field>
-                            <v-autocomplete v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol"
-                                :rules="rolRules" clearable required></v-autocomplete>
+                            <v-select v-if="propUser.rol == 'Client'" v-model="propUser.Fisioterapeuta.nomComplet"
+                                :items="fisios" item-title="nom" item-value="id" label="Fisioterapeuta *" :rules="rolRules"
+                                return-object></v-select>
                         </v-form>
+                        {{ propUser.rol }}
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -55,12 +61,11 @@
 <script>
 export default {
     name: "EditarUserComp",
-    props: ['selectedUser'],
+    props: ['selectedUser', 'allFisios'],
     data() {
         return {
             dialog: false,
             snack: false,
-            user: this.selectedUser,
             nameRules: [
                 value => {
                     if (value) return true;
@@ -130,9 +135,19 @@ export default {
     computed: {
         esViewPerfil() {
             return this.$route.name == 'PerfilView'
+        },
+
+        propUser() {
+            return this.selectedUser
+        },
+
+        fisios() {
+            return this.allFisios
         }
     }
+
 }
+
 </script>
 
 <style scoped>
