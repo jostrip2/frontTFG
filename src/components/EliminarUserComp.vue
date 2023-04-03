@@ -48,7 +48,11 @@ export default {
 
         eliminarUsuari() {
             const url = process.env.VUE_APP_APIURL + "/users/" + this.user.username;
-            this.axios.delete(url)
+            this.axios.delete(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken
+                }
+            })
                 .then(response => {
                     if (response.status == 200) {
                         const message = 'Usuari eliminat correctament';
@@ -67,6 +71,12 @@ export default {
             this.dialog = bool
         }
     },
+
+    computed: {
+        getToken() {
+            return this.$store.state.token
+        }
+    }
 
 }
 </script>

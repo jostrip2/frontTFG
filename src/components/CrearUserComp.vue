@@ -122,20 +122,30 @@ export default {
 
         afegirUsuari() {
             const url = process.env.VUE_APP_APIURL + "/users";
-            this.axios.post(url, this.user)
+            this.axios.post(url, this.user, {
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken
+                }
+            })
                 .then(response => {
                     if (response.status == 201) {
                         const message = 'Usuari creat correctament'
                         this.$emit('createdUser', message)
+                        this.closeDialog()
+                    }
+                    else {
+                        if (response.data.code == 1) { // error usuari ja existeix
+                            const message = "El nom d'usuari introduït ja existeix"
+                            this.$emit('createdUser', message)
+                        }
                     }
                 })
                 .catch(error => {
                     console.log(error);
                     const message = "S'ha produit un error a l'afegir un usuari"
                     this.$emit('createdUser', message)
+                    this.closeDialog()
                 })
-
-            this.closeDialog()
         },
 
         showDialog(bool) {
@@ -165,6 +175,10 @@ export default {
     computed: {
         fisios() {
             return this.allFisios
+        },
+
+        getToken() {
+            return this.$store.state.token
         }
     }
 }

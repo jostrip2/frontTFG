@@ -19,12 +19,10 @@
                     </div>
                     <div class="actions">
                         <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                        <ModifyPassComp v-if="selectedUser != null" v-model="this.modPassDialog"
-                            :selectedUser="selectedUser" @click="showEditUser()" />
                         <EditarUserComp v-if="selectedUser != null" v-model="this.editDialog" :selectedUser="selectedUser"
-                            :allFisios="getFisios" :allUsers="allUsers" @click="showEditUser()" @editedUser="postUsuari" />
+                            :allFisios="getFisios" :allUsers="allUsers" @click="showEditUser" @editedUser="postUsuari" />
                         <EliminarUserComp v-if="selectedUser != null" v-model="this.deleteDialog"
-                            :selectedUser="selectedUser" @click="showDeleteUser()" @deletedUser="postUsuari" />
+                            :selectedUser="selectedUser" @click="showDeleteUser" @deletedUser="postUsuari" />
                     </div>
                 </div>
             </template>
@@ -34,7 +32,7 @@
             <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
             <PColumn field="numMobil" header="Mòbil" style="width: 200px;"></PColumn>
             <PColumn field="rol" header="Rol" style="width: 200px;"></PColumn>
-            <PColumn field="Fisioterapeuta.nom" header="Fisioterapeuta" style="width: 200px;"></PColumn>
+            <PColumn field="Fisioterapeuta.nomComplet" header="Fisioterapeuta" style="width: 200px;"></PColumn>
         </DataTable>
     </div>
     <v-snackbar v-model="showSnack">
@@ -54,15 +52,13 @@ import { FilterMatchMode } from 'primevue/api';
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
 import EliminarUserComp from './EliminarUserComp.vue'
-import ModifyPassComp from './ModifyPassComp.vue'
 
 export default {
     name: "UsuarisView",
     components: {
         CrearUserComp,
         EditarUserComp,
-        EliminarUserComp,
-        ModifyPassComp
+        EliminarUserComp
     },
     emits: ['createdUser', 'editedUser', 'deletedUser'],
     data() {
@@ -74,36 +70,22 @@ export default {
             checkClient: false,
             editDialog: false,
             deleteDialog: false,
-            modPassDialog: false,
             showSnack: false,
             message: '',
             selectedUser: null,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            },
-            contextMenu: [
-                {
-                    label: 'Editar',
-                    icon: 'pi pi-pencil',
-                    handler: () => {
-                        this.editDialog = true;
-                    }
-                },
-                {
-                    label: 'Eliminar',
-                    icon: 'pi pi-trash',
-                    handler: () => {
-                        this.deleteDialog = true;
-                    }
-                }
-            ]
-
+            }
         };
     },
     methods: {
         getUsers() {
             const url = process.env.VUE_APP_APIURL + "/users";
-            this.axios.get(url)
+            this.axios.get(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken
+                }
+            })
                 .then(response => {
                     if (response.status == 200 && response.data) {
                         this.allUsers = response.data
@@ -124,6 +106,10 @@ export default {
                 }
             });
             this.users = searchedUsers;
+
+            if (searchedUsers.indexOf(this.selectedUser) < 0) {
+                this.selectedUser = null
+            }
         },
 
         checkRol(rol) {
@@ -153,18 +139,6 @@ export default {
 
         showDeleteUser() {
             this.deleteDialog = true
-        },
-
-        showModPassUser() {
-            this.modPassDialog = true
-        },
-
-        deleteUser(user) {
-            console.log(user)
-        },
-
-        onRowRightClick(event) {
-            this.$refs.menu.show(event);
         }
     },
 
@@ -178,6 +152,10 @@ export default {
             });
             return fisios;
         },
+
+        getToken() {
+            return this.$store.state.token
+        }
     },
 
     mounted() {

@@ -19,21 +19,17 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="propUser.nom" label="Nom *" type="text" clearable
-                                required></v-text-field>
-                            <v-text-field v-model="propUser.cognoms" label="Cognoms *" type="text" clearable
-                                required></v-text-field>
-                            <v-text-field v-model="propUser.username" label="Nom d'usuari" type="text" clearable
+                            <v-text-field v-model="propUser.nom" label="Nom" type="text" clearable required></v-text-field>
+                            <v-text-field v-model="propUser.cognoms" label="Cognoms" type="text" clearable
                                 required></v-text-field>
                             <v-text-field v-model="propUser.email" label="Email" type="email" :rules="emailRules" clearable
                                 required></v-text-field>
                             <v-text-field v-model="propUser.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
                                 clearable></v-text-field>
                             <v-select v-if="propUser.rol == 'Client'" v-model="propUser.Fisioterapeuta.nomComplet"
-                                :items="fisios" item-title="nom" item-value="id" label="Fisioterapeuta *" :rules="rolRules"
+                                :items="fisios" item-title="nom" item-value="id" label="Fisioterapeuta" :rules="rolRules"
                                 return-object></v-select>
                         </v-form>
-                        {{ propUser.rol }}
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -104,12 +100,18 @@ export default {
         modificarUsuari() {
             const url = process.env.VUE_APP_APIURL + "/users";
             const user = {
-                username: this.user.username,
-                email: this.user.email,
-                numMobil: this.user.numMobil,
-                rol: this.user.rol
+                username: this.propUser.username,
+                nom: this.propUser.nom,
+                cognoms: this.propUser.cognoms,
+                email: this.propUser.email,
+                numMobil: this.propUser.numMobil,
+                FisioterapeutaId: this.propUser.FisioterapeutaId
             }
-            this.axios.patch(url, user)
+            this.axios.patch(url, user, {
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken
+                }
+            })
                 .then(response => {
                     if (response.status == 200) {
                         const message = 'Usuari modificat correctament'
@@ -143,6 +145,10 @@ export default {
 
         fisios() {
             return this.allFisios
+        },
+
+        getToken() {
+            return this.$store.state.token
         }
     }
 
