@@ -8,7 +8,7 @@
 
                         <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account"> Usuaris</v-btn>
                         <p v-if="isAdmin">|</p>
-                        <v-btn v-if="isAdmin" prepend-icon="mdi-video">Videos</v-btn>
+                        <v-btn v-if="isAdmin" :to="{ name: 'VideosView' }" prepend-icon="mdi-video">Videos</v-btn>
                         <p v-if="isAdmin">|</p>
                         <v-btn v-if="isAdmin" prepend-icon="mdi-video-account">Assignacions</v-btn>
                     </div>

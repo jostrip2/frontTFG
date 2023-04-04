@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../components/LoginView'
 import HomeView from '../components/HomeView'
-import UsuarisView from '../components/UsuarisView'
+import UsuarisView from '../components/usuarisComp/UsuarisView'
+import VideosView from '../components/videosComp/VideosView'
 
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
     name: "UsuarisView",
     component: UsuarisView
   },
+  {
+    path: '/videos',
+    name: "VideosView",
+    component: VideosView
+  }
 ]
 
 const router = createRouter({

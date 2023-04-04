@@ -58,6 +58,10 @@ export default {
                         const message = 'Usuari eliminat correctament';
                         this.$emit('deletedUser', message)
                     }
+                    else if (response.status == 404) {
+                        const message = 'Usuari no existeix';
+                        this.$emit('deletedUser', message)
+                    }
                 })
                 .catch(error => {
                     console.log(error);
