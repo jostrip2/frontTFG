@@ -19,12 +19,12 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="this.user.nom" label="Nom *" type="text" :rules="nameRules" clearable
+                            <v-text-field v-model="this.user.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
                                 required></v-text-field>
-                            <v-text-field v-model="this.user.cognoms" label="Cognoms *" type="text" :rules="nameRules"
+                            <v-text-field v-model="this.user.cognoms" label="Cognoms *" type="text" :rules="noBuitRules"
                                 clearable required></v-text-field>
-                            <v-text-field v-model="this.user.username" label="Nom d'usuari *" type="text" :rules="nameRules"
-                                clearable required></v-text-field>
+                            <v-text-field v-model="this.user.username" label="Nom d'usuari *" type="text"
+                                :rules="noBuitRules" clearable required></v-text-field>
                             <v-text-field v-model="this.user.password" label="Constrasenya *" type="password"
                                 :rules="passRules" clearable required></v-text-field>
                             <v-text-field v-model="this.user.email" label="Email *" type="email" :rules="emailRules"
@@ -32,9 +32,9 @@
                             <v-text-field v-model="this.user.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
                                 clearable></v-text-field>
                             <v-select v-model="this.user.rol" :items="['Administrador', 'Client']" label="Rol *"
-                                :rules="rolRules"></v-select>
+                                :rules="noBuitRules"></v-select>
                             <v-select v-model="this.user.fisio" :items="fisios" item-title="nom" item-value="id"
-                                label="Fisioterapeuta *" :rules="rolRules" return-object></v-select>
+                                label="Fisioterapeuta *" :rules="noBuitRules" return-object></v-select>
                         </v-form>
                     </v-container>
                     <small style="padding-left: 12px; color: red;">* Camp necessari</small>
@@ -79,7 +79,7 @@ export default {
                 rol: null,
                 fisio: null
             },
-            nameRules: [
+            noBuitRules: [
                 value => {
                     if (value) return true;
                     return 'Camp obligatori'
@@ -87,7 +87,7 @@ export default {
             ],
             passRules: [
                 value => {
-                    if (value && value?.length >= 8) return true;
+                    if (value && value.length >= 8) return true;
                     return 'Min. 8 caràcters'
                 }
             ],
@@ -102,12 +102,6 @@ export default {
                 value => {
                     if (value && value?.length == 9) return true
                     return 'Ha de ser de 9 números'
-                }
-            ],
-            rolRules: [
-                value => {
-                    if (value) return true;
-                    return 'Camp obligatori'
                 }
             ]
         };

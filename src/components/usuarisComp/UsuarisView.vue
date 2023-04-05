@@ -65,7 +65,6 @@ export default {
         return {
             allUsers: [],
             users: [],
-            usernameSearch: '',
             checkAdmin: false,
             checkClient: false,
             editDialog: false,
@@ -101,7 +100,7 @@ export default {
         searchUser() {
             var searchedUsers = [];
             this.allUsers.forEach(user => {
-                if (user.username.indexOf(this.usernameSearch.toLowerCase()) >= 0 && this.checkRol(user.rol)) {
+                if (this.checkRol(user.rol)) {
                     searchedUsers.push(user)
                 }
             });

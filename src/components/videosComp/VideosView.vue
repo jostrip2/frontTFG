@@ -12,14 +12,14 @@
                         </span>
                     </div>
                     <div class="actions">
-                        <p>WIP</p>
+                        <CrearVideoComp @createdVideo='postVideo' />
                     </div>
                 </div>
             </template>
-            <template #empty> No s'han trobat usuaris. </template>
+            <template #empty> No s'han trobat videos. </template>
             <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
             <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
-            <PColumn field="area" header="Area" style="width: 200px;"></PColumn>
+            <PColumn field="areaExercici" header="Area" style="width: 200px;"></PColumn>
         </DataTable>
     </div>
     <v-snackbar v-model="showSnack">
@@ -31,14 +31,19 @@
             </v-btn>
         </template>
     </v-snackbar>
-    <p>{{ this.videos }}</p>
 </template>
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
 
+import CrearVideoComp from './CrearVideoComp.vue';
+
 export default {
     name: "VideosView",
+    components: {
+        CrearVideoComp
+    },
+    emits: ['createdVideo'],
     data() {
         return {
             allVideos: [],
@@ -74,23 +79,13 @@ export default {
                 })
         },
 
-        searchVideos() {
-            var searchedVideos = [];
-            this.allVideos.forEach(user => {
-                if (user.username.indexOf(this.usernameSearch.toLowerCase()) >= 0) {
-                    searchedVideos.push(user)
-                }
-            });
-            this.videos = searchedVideos;
-
-            if (searchedVideos.indexOf(this.selectedVideo) < 0) {
-                this.selectedVideo = null
-            }
+        postVideo(message) {
+            this.showMessage(message)
+            this.refresh()
         },
 
         refresh() {
             this.getVideos()
-            this.searchVideos()
         },
 
         getToken() {
