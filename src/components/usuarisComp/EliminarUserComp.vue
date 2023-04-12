@@ -40,14 +40,13 @@ export default {
     data() {
         return {
             dialog: false,
-            user: this.selectedUser,
         };
     },
     emits: ['deletedUser'],
     methods: {
 
         eliminarUsuari() {
-            const url = process.env.VUE_APP_APIURL + "/users/" + this.user.username;
+            const url = process.env.VUE_APP_APIURL + "/users/" + this.propUser.username;
             this.axios.delete(url, {
                 headers: {
                     'Authorization': 'Bearer ' + this.getToken
@@ -77,6 +76,10 @@ export default {
     },
 
     computed: {
+        propUser() {
+            return this.selectedUser
+        },
+
         getToken() {
             return this.$store.state.token
         }

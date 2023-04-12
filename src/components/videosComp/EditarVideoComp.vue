@@ -19,13 +19,13 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="video.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
+                            <v-text-field v-model="propVideo.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
                                 required></v-text-field>
-                            <v-text-field v-model="video.descripcio" label="Descripcio *" type="text" :rules="noBuitRules"
-                                clearable required></v-text-field>
+                            <v-text-field v-model="propVideo.descripcio" label="Descripcio *" type="text"
+                                :rules="noBuitRules" clearable required></v-text-field>
                             <v-text-field v-model="linkVideo" label="Enllaç de Google Drive *" type="text"
                                 :rules="linkRules" clearable required></v-text-field>
-                            <v-select v-model="video.areaExercici" :items="arees" label="Area"></v-select>
+                            <v-select v-model="propVideo.areaExercici" :items="arees" label="Area"></v-select>
                         </v-form>
                     </v-container>
                 </v-card-text>
@@ -59,7 +59,6 @@ export default {
     props: ['selectedVideo'],
     data() {
         return {
-            video: Object.assign({}, this.selectedVideo),
             linkVideo: '',
             dialog: false,
             snack: false,
@@ -91,13 +90,12 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/videos";
             try {
                 let video = {
-                    id: this.video.id,
-                    nom: this.video.nom,
+                    id: this.propVideo.id,
+                    nom: this.propVideo.nom,
                     codi: this.getVideoCodi,
-                    descripcio: this.video.descripcio,
-                    areaExercici: this.video.areaExercici
+                    descripcio: this.propVideo.descripcio,
+                    areaExercici: this.propVideo.areaExercici
                 }
-                console.log(video)
                 this.axios.patch(url, video, {
                     headers: {
                         'Authorization': 'Bearer ' + this.getToken
@@ -132,8 +130,12 @@ export default {
         }
     },
     computed: {
+        propVideo() {
+            return this.selectedVideo
+        },
+
         getVideoLink() {
-            return 'https://drive.google.com/file/d/' + this.video.codi + '/view?usp=share_link'
+            return 'https://drive.google.com/file/d/' + this.propVideo.codi + '/view?usp=share_link'
         },
 
         getVideoCodi() {

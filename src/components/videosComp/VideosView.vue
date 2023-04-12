@@ -13,6 +13,7 @@
                     </div>
                     <div class="actions">
                         <CrearVideoComp @createdVideo='postActionVideo' />
+                        <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo" />
                         <EditarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
                             @editedVideo='postActionVideo' />
                         <EliminarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
@@ -43,13 +44,15 @@ import { FilterMatchMode } from 'primevue/api';
 import CrearVideoComp from './CrearVideoComp.vue';
 import EditarVideoComp from './EditarVideoComp.vue';
 import EliminarVideoComp from './EliminarVideoComp.vue';
+import VeureVideoComp from './VeureVideoComp.vue';
 
 export default {
     name: "VideosView",
     components: {
         CrearVideoComp,
         EditarVideoComp,
-        EliminarVideoComp
+        EliminarVideoComp,
+        VeureVideoComp
     },
     emits: ['createdVideo'],
     data() {

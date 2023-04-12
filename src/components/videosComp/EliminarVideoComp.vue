@@ -39,7 +39,6 @@ export default {
     props: ['selectedVideo'],
     data() {
         return {
-            video: this.selectedVideo,
             dialog: false
         };
     },
@@ -47,7 +46,7 @@ export default {
     methods: {
 
         eliminarVideo() {
-            const url = process.env.VUE_APP_APIURL + "/videos/" + this.video.id;
+            const url = process.env.VUE_APP_APIURL + "/videos/" + this.propVideo.id;
             this.axios.delete(url, {
                 headers: {
                     'Authorization': 'Bearer ' + this.getToken
@@ -77,6 +76,10 @@ export default {
     },
 
     computed: {
+        propVideo() {
+            return this.selectedVideo
+        },
+
         getToken() {
             return this.$store.state.token
         }
