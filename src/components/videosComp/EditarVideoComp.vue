@@ -1,9 +1,9 @@
 <template>
     <div>
-        <v-tooltip text="Afegir" location="top">
+        <v-tooltip text="Editar" location="top">
             <template v-slot:activator="{ props }">
                 <v-icon v-bind="props" size="x-large" @click="showDialog(true)">
-                    mdi-plus
+                    mdi-pencil
                 </v-icon>
             </template>
         </v-tooltip>
@@ -13,30 +13,29 @@
                     <v-btn icon="mdi-account"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
-                        <span class="text-h5">Afegir usuari</span>
+                        <span class="text-h5">Editar video</span>
                     </v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="this.video.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
+                            <v-text-field v-model="video.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
                                 required></v-text-field>
-                            <v-text-field v-model="this.video.descripcio" label="Descripcio *" type="text"
-                                :rules="noBuitRules" clearable required></v-text-field>
-                            <v-text-field v-model="this.linkVideo" label="Enllaç de Google Drive *" type="text"
+                            <v-text-field v-model="video.descripcio" label="Descripcio *" type="text" :rules="noBuitRules"
+                                clearable required></v-text-field>
+                            <v-text-field v-model="linkVideo" label="Enllaç de Google Drive *" type="text"
                                 :rules="linkRules" clearable required></v-text-field>
-                            <v-select v-model="this.video.areaExercici" :items="arees" label="Area"></v-select>
+                            <v-select v-model="video.areaExercici" :items="arees" label="Area"></v-select>
                         </v-form>
                     </v-container>
-                    <small style="padding-left: 12px; color: red;">* Camp necessari</small>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="closeDialog">
+                    <v-btn color="blue-darken-1" variant="text" @click="showDialog(false)">
                         Cancelar
                     </v-btn>
                     <v-btn color="blue-darken-1" variant="text" @click="validate">
-                        Afegir
+                        Editar
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -56,20 +55,15 @@
 import isUrl from 'is-url'
 
 export default {
-    name: "CrearVideoComp",
+    name: "EditarVideoComp",
+    props: ['selectedVideo'],
     data() {
         return {
+            video: Object.assign({}, this.selectedVideo),
+            linkVideo: '',
             dialog: false,
             snack: false,
-            video: {
-                nom: '',
-                codi: '',
-                descripcio: '',
-                areaExercici: ''
-            },
-            linkVideo: '',
             arees: ['Braços', 'Tronc', 'Cames', 'Coll'],
-
             noBuitRules: [
                 value => {
                     if (value) return true;
@@ -85,53 +79,52 @@ export default {
             ]
         };
     },
-    emits: ['createdVideo'],
+    emits: ['editedVideo'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
-            if (valid) this.afegirUsuari()
+
+            if (valid) this.modificarVideo()
             else this.snack = true
         },
-
-        afegirUsuari() {
+        modificarVideo() {
             const url = process.env.VUE_APP_APIURL + "/videos";
             try {
-                this.video.codi = this.getCodiVideo;
-                this.axios.post(url, this.video, {
+                let video = {
+                    id: this.video.id,
+                    nom: this.video.nom,
+                    codi: this.getVideoCodi,
+                    descripcio: this.video.descripcio,
+                    areaExercici: this.video.areaExercici
+                }
+                console.log(video)
+                this.axios.patch(url, video, {
                     headers: {
                         'Authorization': 'Bearer ' + this.getToken
                     }
                 })
                     .then(response => {
-                        if (response.status == 201) {
-                            const message = 'Video creat correctament'
-                            this.$emit('createdVideo', message)
+                        if (response.status == 200) {
+                            const message = 'Video modificat correctament'
+                            this.$emit('editedVideo', message)
                         }
                     })
                     .catch(error => {
-                        console.log('Error:' + error);
-                        const message = "S'ha produit un error a l'afegir un video"
-                        this.$emit('createdVideo', message)
+                        console.log(error);
+                        const message = "S'ha produit un error al modificar un video"
+                        this.$emit('editedVideo', message)
                     })
-            } catch (error) {
-                console.log('Error:' + error);
-                const message = "S'ha produit un error a l'afegir un video"
-                this.$emit('createdVideo', message)
             }
-            this.closeDialog()
+            catch (error) {
+                console.log(error);
+                const message = "S'ha produit un error a l'editar un video"
+                this.$emit('editedVideo', message)
+            }
+            this.showDialog(false)
         },
 
         showDialog(bool) {
             this.dialog = bool
-        },
-
-        closeDialog() {
-            this.showDialog(false)
-            this.clearFields()
-        },
-
-        clearFields() {
-            this.video = {}
         },
 
         showSnack(bool) {
@@ -139,16 +132,26 @@ export default {
         }
     },
     computed: {
-        getCodiVideo() {
+        getVideoLink() {
+            return 'https://drive.google.com/file/d/' + this.video.codi + '/view?usp=share_link'
+        },
+
+        getVideoCodi() {
             return this.linkVideo.split('/')[5]
         },
 
         getToken() {
             return this.$store.state.token
         }
+    },
+    mounted() {
+        this.linkVideo = this.getVideoLink
     }
+
 }
+
 </script>
+
 <style scoped>
 div {
     padding: 5px;

@@ -19,10 +19,10 @@
                     </div>
                     <div class="actions">
                         <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                        <EditarUserComp v-if="selectedUser != null" v-model="this.editDialog" :selectedUser="selectedUser"
-                            :allFisios="getFisios" :allUsers="allUsers" @click="showEditUser" @editedUser="postUsuari" />
-                        <EliminarUserComp v-if="selectedUser != null" v-model="this.deleteDialog"
-                            :selectedUser="selectedUser" @click="showDeleteUser" @deletedUser="postUsuari" />
+                        <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
+                            :allUsers="allUsers" @editedUser="postUsuari" />
+                        <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser"
+                            @deletedUser="postUsuari" />
                     </div>
                 </div>
             </template>
@@ -67,8 +67,6 @@ export default {
             users: [],
             checkAdmin: false,
             checkClient: false,
-            editDialog: false,
-            deleteDialog: false,
             showSnack: false,
             message: '',
             selectedUser: null,
@@ -130,14 +128,6 @@ export default {
         showMessage(message) {
             this.message = message
             this.showSnack = true
-        },
-
-        showEditUser() {
-            this.editDialog = true
-        },
-
-        showDeleteUser() {
-            this.deleteDialog = true
         }
     },
 
