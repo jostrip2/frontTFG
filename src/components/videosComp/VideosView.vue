@@ -67,9 +67,7 @@ export default {
             }
         };
     },
-    computed: {
 
-    },
     methods: {
         getVideos() {
             const url = process.env.VUE_APP_APIURL + "/videos";
@@ -99,13 +97,15 @@ export default {
             this.getVideos()
         },
 
-        getToken() {
-            return this.$store.state.token
-        },
-
         showMessage(message) {
             this.message = message
             this.showSnack = true
+        },
+    },
+
+    computed: {
+        getToken() {
+            return this.$store.state.token
         },
     },
 
