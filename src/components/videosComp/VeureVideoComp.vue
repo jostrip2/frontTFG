@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="unset">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-eye"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Veure video</span>

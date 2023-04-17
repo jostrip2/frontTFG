@@ -3,7 +3,6 @@ import LoginView from '../components/LoginView'
 import UsuarisView from '../components/usuarisComp/UsuarisView'
 import VideosView from '../components/videosComp/VideosView'
 
-
 const routes = [
   {
     path: '/',

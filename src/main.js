@@ -12,14 +12,11 @@ import "primevue/resources/primevue.min.css";                       //core
 import "primeicons/primeicons.css";                                 //icons
 
 // PrimeVue components
-import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Menubar from 'primevue/menubar';
 import Message from 'primevue/message';
-import AutoComplete from 'primevue/autocomplete';
-
+import Picklist from 'primevue/picklist';
 
 // Vuetify
 import 'vuetify/styles'
@@ -52,13 +49,11 @@ app.use(vuetify)
 app.use(PrimeVue)
 
 // PrimeVue components
-app.component("PButton", Button)
 app.component("InputText", InputText)
 app.component("DataTable", DataTable)
 app.component("PColumn", Column)
-app.component("MenuBar", Menubar)
 app.component("PMessage", Message)
-app.component("AutoComplete", AutoComplete)
+app.component("PickList", Picklist)
 
 // Mount
 app.mount("#app");

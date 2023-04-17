@@ -3,16 +3,14 @@
         <v-card>
             <v-layout>
                 <v-app-bar v-if="!isLogin" class="justify-left" color="blue-darken-3">
-                    <div class="menuLeft">
+                    <div class="barLeft">
                         <v-toolbar-title class="title">FisioApp</v-toolbar-title>
 
                         <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account"> Usuaris</v-btn>
                         <p v-if="isAdmin">|</p>
                         <v-btn v-if="isAdmin" :to="{ name: 'VideosView' }" prepend-icon="mdi-video">Videos</v-btn>
-                        <p v-if="isAdmin">|</p>
-                        <v-btn v-if="isAdmin" prepend-icon="mdi-video-account">Assignacions</v-btn>
                     </div>
-                    <div class="menuRigth">
+                    <div class="barRigth">
                         <v-btn prepend-icon="mdi-email">Missatges</v-btn>
                         <p>|</p>
                         <v-btn @click="veurePerfil" prepend-icon="mdi-account-details">Perfil</v-btn>
@@ -86,7 +84,7 @@ p {
     margin-top: 5px;
 }
 
-.menuLeft {
+.barLeft {
     display: flex;
     margin-left: 15px;
     margin-right: auto;
@@ -98,7 +96,7 @@ p {
     margin-top: 3px;
 }
 
-.menuRigth {
+.barRigth {
     display: flex;
     margin-left: auto;
     margin-right: 15px;

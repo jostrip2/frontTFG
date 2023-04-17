@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-account-edit"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Editar usuari</span>
@@ -58,6 +58,7 @@
 export default {
     name: "EditarUserComp",
     props: ['selectedUser', 'allFisios'],
+    emits: ['editedUser'],
     data() {
         return {
             dialog: false,
@@ -89,7 +90,6 @@ export default {
             ]
         };
     },
-    emits: ['editedUser'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()
@@ -135,10 +135,6 @@ export default {
         }
     },
     computed: {
-        esViewPerfil() {
-            return this.$route.name == 'PerfilView'
-        },
-
         propUser() {
             return this.selectedUser
         },

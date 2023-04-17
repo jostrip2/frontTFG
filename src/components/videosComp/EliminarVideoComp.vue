@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-delete"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Eliminar video</span>
@@ -37,14 +37,13 @@
 export default {
     name: "EliminarVideoComp",
     props: ['selectedVideo'],
+    emits: ['deletedVideo'],
     data() {
         return {
             dialog: false
         };
     },
-    emits: ['deletedVideo'],
     methods: {
-
         eliminarVideo() {
             const url = process.env.VUE_APP_APIURL + "/videos/" + this.propVideo.id;
             this.axios.delete(url, {

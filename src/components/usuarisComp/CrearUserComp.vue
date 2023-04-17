@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-account-plus"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Afegir usuari</span>
@@ -65,6 +65,7 @@
 export default {
     name: "CrearUserComp",
     props: ['allFisios'],
+    emits: ['createdUser'],
     data() {
         return {
             dialog: false,
@@ -106,7 +107,6 @@ export default {
             ]
         };
     },
-    emits: ['createdUser'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()

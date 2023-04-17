@@ -1,24 +1,24 @@
 <template>
     <div class="list">
-        <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="10" :alwaysShowPaginator=false
-            removableSort tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
-            v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio']">
+        <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="10" removableSort
+            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedVideo"
+            :globalFilterFields="['nom', 'descripcio']">
             <template #header>
-                <div class="listHeader">
-                    <div class="search">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText v-model="filters['global'].value" placeholder="Cercar videos" />
-                        </span>
-                    </div>
-                    <div class="actions">
-                        <CrearVideoComp @createdVideo='postActionVideo' />
-                        <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo" />
-                        <EditarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
-                            @editedVideo='postActionVideo' />
-                        <EliminarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
-                            @deletedVideo='postActionVideo' />
-                    </div>
+                <div class="search">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global'].value" placeholder="Cercar videos" />
+                    </span>
+                </div>
+            </template>
+            <template #paginatorstart>
+                <div class="actions">
+                    <CrearVideoComp @createdVideo='postActionVideo' />
+                    <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo" />
+                    <EditarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
+                        @editedVideo='postActionVideo' />
+                    <EliminarVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo"
+                        @deletedVideo='postActionVideo' />
                 </div>
             </template>
             <template #empty> No s'han trobat videos. </template>
@@ -54,7 +54,6 @@ export default {
         EliminarVideoComp,
         VeureVideoComp
     },
-    emits: ['createdVideo'],
     data() {
         return {
             allVideos: [],
@@ -116,11 +115,6 @@ export default {
 </script>
 
 <style scoped>
-.listHeader {
-    display: flex;
-    flex-direction: row;
-}
-
 .search {
     display: flex;
     margin-left: 0;

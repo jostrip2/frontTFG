@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-video-plus"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Afegir usuari</span>
@@ -57,6 +57,7 @@ import isUrl from 'is-url'
 
 export default {
     name: "CrearVideoComp",
+    emits: ['createdVideo'],
     data() {
         return {
             dialog: false,
@@ -85,7 +86,7 @@ export default {
             ]
         };
     },
-    emits: ['createdVideo'],
+
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()

@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-pencil"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Editar video</span>
@@ -57,6 +57,7 @@ import isUrl from 'is-url'
 export default {
     name: "EditarVideoComp",
     props: ['selectedVideo'],
+    emits: ['editedVideo'],
     data() {
         return {
             linkVideo: '',
@@ -78,7 +79,6 @@ export default {
             ]
         };
     },
-    emits: ['editedVideo'],
     methods: {
         async validate() {
             const { valid } = await this.$refs.form.validate()

@@ -1,29 +1,29 @@
 <template>
     <div class="list">
-        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" :alwaysShowPaginator=false
-            removableSort tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
-            v-model:selection="selectedUser" :globalFilterFields="['nomComplet', 'username']">
+        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" removableSort
+            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedUser"
+            :globalFilterFields="['nomComplet', 'username']">
             <template #header>
-                <div class="listHeader">
-                    <div class="search">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search" />
-                            <InputText v-model="filters['global'].value" placeholder="Cercar usuari" />
-                        </span>
-                        <div class="checks">
-                            <v-checkbox v-model="this.checkAdmin" label="Administrador" @change="searchUser"
-                                hide-details></v-checkbox>
-                            <v-checkbox v-model="this.checkClient" label="Client" @change="searchUser"
-                                hide-details></v-checkbox>
-                        </div>
+                <div class="search">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global'].value" placeholder="Cercar usuari" />
+                    </span>
+                    <div class="checks">
+                        <v-checkbox v-model="this.checkAdmin" label="Administrador" @change="searchUser"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="this.checkClient" label="Client" @change="searchUser"
+                            hide-details></v-checkbox>
                     </div>
-                    <div class="actions">
-                        <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                        <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
-                            :allUsers="allUsers" @editedUser="postUsuari" />
-                        <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser"
-                            @deletedUser="postUsuari" />
-                    </div>
+                </div>
+            </template>
+            <template #paginatorstart>
+                <div class="actions">
+                    <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
+                    <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
+                        :allUsers="allUsers" @editedUser="postUsuari" />
+                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser" />
+                    <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" @deletedUser="postUsuari" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>
@@ -52,15 +52,16 @@ import { FilterMatchMode } from 'primevue/api';
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
 import EliminarUserComp from './EliminarUserComp.vue'
+import AssignacionsComp from './AssignacionsComp.vue'
 
 export default {
     name: "UsuarisView",
     components: {
         CrearUserComp,
         EditarUserComp,
-        EliminarUserComp
+        EliminarUserComp,
+        AssignacionsComp
     },
-    emits: ['createdUser', 'editedUser', 'deletedUser'],
     data() {
         return {
             allUsers: [],
@@ -157,16 +158,15 @@ export default {
 </script>
 
 <style scoped>
-.listHeader {
-    display: flex;
-    flex-direction: row;
-}
-
 .search {
     display: flex;
     margin-left: 0;
     margin-right: auto;
     padding: 10px;
+}
+
+.searchBar {
+    width: 200px;
 }
 
 .checks {

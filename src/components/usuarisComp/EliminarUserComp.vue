@@ -10,7 +10,7 @@
         <v-dialog v-model="this.dialog" persistent width="512">
             <v-card>
                 <v-toolbar flat color="blue-darken-3">
-                    <v-btn icon="mdi-account"></v-btn>
+                    <v-btn icon="mdi-delete"></v-btn>
 
                     <v-toolbar-title class="font-weight-light">
                         <span class="text-h5">Eliminar usuari</span>
@@ -37,12 +37,12 @@
 export default {
     name: "EliminarUserComp",
     props: ['selectedUser'],
+    emits: ['deletedUser'],
     data() {
         return {
             dialog: false,
         };
     },
-    emits: ['deletedUser'],
     methods: {
 
         eliminarUsuari() {
