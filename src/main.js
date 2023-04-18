@@ -16,7 +16,7 @@ import InputText from "primevue/inputtext";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Message from 'primevue/message';
-import Picklist from 'primevue/picklist';
+import Calendar from 'primevue/calendar';
 
 // Vuetify
 import 'vuetify/styles'
@@ -53,7 +53,7 @@ app.component("InputText", InputText)
 app.component("DataTable", DataTable)
 app.component("PColumn", Column)
 app.component("PMessage", Message)
-app.component("PickList", Picklist)
+app.component("PCalendar", Calendar)
 
 // Mount
 app.mount("#app");
