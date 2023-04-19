@@ -40,19 +40,22 @@
                     <div id="dateSelect">
                         <h4 class="titleDiv">Selecció de dies</h4>
                         <div id="checks">
-                            <v-checkbox v-model="checkSol" label="Nomes 1 dia" @change="controlChecks('checkSol')"
+                            <v-checkbox v-model="checkDies" label="Per dies" @change="controlChecks('checkDies')"
                                 hideDetails></v-checkbox>
-                            <v-checkbox v-model="checkTots" label="Tots els dies" @change="controlChecks('checkTots')"
-                                hideDetails></v-checkbox>
-                            <v-checkbox v-model="checkSetmana" label="Per setmana" @change="controlChecks('checkSetmana')"
-                                hideDetails></v-checkbox>
+                            <v-checkbox v-model="checkSetmana" label="Per dies de la setmana"
+                                @change="controlChecks('checkSetmana')" hideDetails></v-checkbox>
                         </div>
-                        <div v-if="checkSol" class="dateSelect_checkX">
-                            <p id="selectedDate_checkSol">Dia seleccionat: {{ getDiaSol }}</p>
-                            <PCalendar v-model="diaSol" dateFormat="dd/mm/yy" inline />
-                        </div>
-                        <div v-if="checkTots" class="dateSelect_checkX">
-                            <p id="selectedDate_checkTots">Dies seleccionats: {{ diesTots }}</p>
+                        <div v-if="checkDies" class="dateSelect_checkX">
+                            <div>
+                                <VueDatePicker id="calendar" v-model="dies" multi-dates multi-dates-limit="6" auto-apply
+                                    inline :enable-time-picker="false" />
+                            </div>
+                            <div>
+                                <p id="selectedDate_checkDies">Dies seleccionats:</p>
+                                <v-list lines="one" density="compact">
+                                    <v-list-item v-for="dia in getDies" :key="dia" :title="dia"></v-list-item>
+                                </v-list>
+                            </div>
                         </div>
                         <div v-if="checkSetmana" class="dateSelect_checkX">
                             <p id="selectedDate_checkSetmana">Dies seleccionats: {{ diesSet }}</p>
@@ -92,17 +95,16 @@ export default {
         return {
             videos: null,
             selectedVideo: null,
-            checkSol: false,
+            checkDies: false,
             checkSetmana: false,
             checkTots: false,
-            diaSol: null,
-            diesTots: null,
-            diesSet: null,
+            dies: [],
+            diesSet: [],
             dialog: false,
             snack: false,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-            }
+            },
         }
     },
     methods: {
@@ -125,7 +127,7 @@ export default {
         },
 
         checkSelection() {
-            return this.selectedVideo != null && (this.diaSol || this.diesSet || this.diesTots)
+            return this.selectedVideo != null && (this.dies.length > 0 || this.diesSet.length > 0)
         },
 
         assignarVideos() {
@@ -139,45 +141,27 @@ export default {
 
         controlChecks(selectedCheck) {
             switch (selectedCheck) {
-                case 'checkSol':
+                case 'checkDies':
                     this.checkSetmana = false;
-                    this.checkTots = false;
-                    if (!this.checkSol) this.diaSol = null;
-                    else {
-                        this.diesTots = null;
-                        this.diesSet = null;
-                    }
+                    if (!this.checkDies) this.dies = [];
+                    else this.diesSet = [];
                     break
                 case 'checkSetmana':
-                    this.checkSol = false;
-                    this.checkTots = false;
-                    if (!this.checkSetmana) this.diesSet = null;
-                    else {
-                        this.diesTots = null;
-                        this.diaSol = null;
-                    }
-                    break
-                case 'checkTots':
-                    this.checkSol = false;
-                    this.checkSetmana = false;
-                    if (!this.checkTots) this.diesTots = null;
-                    else {
-                        this.diaSol = null;
-                        this.diesSet = null;
-                    }
+                    this.checkDies = false;
+                    if (!this.checkSetmana) this.diesSet = [];
+                    else this.dies = [];
                     break
             }
         },
 
         formatDate(date) {
-            if (date == null) return null
-            else {
+            return date.map(date => {
                 let newDate = new Date(date)
                 let day = newDate.getDate()
                 let month = newDate.getMonth() + 1
                 let year = newDate.getFullYear()
                 return day + '/' + month + '/' + year
-            }
+            })
         },
 
         closeDialog() {
@@ -203,8 +187,12 @@ export default {
             return this.selectedUser
         },
 
-        getDiaSol() {
-            return this.formatDate(this.diaSol)
+        getDies() {
+            if (this.dies != null) {
+                const dies = Object.assign([], this.dies)
+                return this.formatDate(dies.sort((a, b) => Date.parse(a) - Date.parse(b)))
+            }
+            else return null
         },
 
         getToken() {
@@ -226,8 +214,6 @@ export default {
 #dialog {
     width: 80%;
     height: 100%;
-    max-width: 100%;
-    max-width: 100%;
 }
 
 #cardContent {
@@ -260,7 +246,13 @@ export default {
 }
 
 .dateSelect_checkX {
+    display: flex;
+    justify-content: flex-start;
     margin: 10px;
+}
+
+#calendar {
+    margin-right: 10px;
 }
 
 #cardActions {

@@ -16,7 +16,7 @@ import InputText from "primevue/inputtext";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Message from 'primevue/message';
-import Calendar from 'primevue/calendar';
+import VirtualScroller from 'primevue/virtualscroller';
 
 // Vuetify
 import 'vuetify/styles'
@@ -36,6 +36,10 @@ const vuetify = createVuetify({
     }
 })
 
+// Calendar
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 // Axios common header
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
@@ -53,7 +57,8 @@ app.component("InputText", InputText)
 app.component("DataTable", DataTable)
 app.component("PColumn", Column)
 app.component("PMessage", Message)
-app.component("PCalendar", Calendar)
+app.component("VueDatePicker", VueDatePicker)
+app.component("VirtualScroller", VirtualScroller)
 
 // Mount
 app.mount("#app");

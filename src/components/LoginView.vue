@@ -15,8 +15,6 @@
                     <button>Entrar</button>
                 </form>
             </div>
-            <!-- <p v-if="showError" class="error">Nom d'usuari o contrasenya incorrectes</p> -->
-
         </div>
         <PMessage v-if="showError" severity="error" @close="showError = false">Nom d'usuari o contrasenya incorrectes
         </PMessage>
