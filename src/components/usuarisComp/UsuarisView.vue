@@ -20,11 +20,10 @@
             <template #paginatorstart>
                 <div class="actions">
                     <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                    <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
+                    <EditarUserComp v-if="userSelected" :selectedUser="selectedUser" :allFisios="getFisios"
                         :allUsers="allUsers" @editedUser="postUsuari" />
-                    <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" @deletedUser="postUsuari" />
-                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser"
-                        @assignedVideo="postUsuari" />
+                    <EliminarUserComp v-if="userSelected" :selectedUser="selectedUser" @deletedUser="postUsuari" />
+                    <VeureAssignacionsComp v-if="userSelected" :selectedUser="selectedUser.id" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>
@@ -53,7 +52,7 @@ import { FilterMatchMode } from 'primevue/api';
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
 import EliminarUserComp from './EliminarUserComp.vue'
-import AssignacionsComp from './AssignacionsComp.vue'
+import VeureAssignacionsComp from './VeureAssignacionsComp.vue'
 
 export default {
     name: "UsuarisView",
@@ -61,7 +60,7 @@ export default {
         CrearUserComp,
         EditarUserComp,
         EliminarUserComp,
-        AssignacionsComp
+        VeureAssignacionsComp
     },
     data() {
         return {
@@ -142,6 +141,10 @@ export default {
                 }
             });
             return fisios;
+        },
+
+        userSelected() {
+            return this.selectedUser != null
         },
 
         getToken() {

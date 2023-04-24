@@ -50,7 +50,7 @@ export default {
                             this.$router.push("/users")
                         }
                         else {
-                            this.$router.push("/home")
+                            this.$router.push("/")
                         }
                     }
                 })

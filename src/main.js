@@ -16,7 +16,7 @@ import InputText from "primevue/inputtext";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Message from 'primevue/message';
-import VirtualScroller from 'primevue/virtualscroller';
+import TriStateCheckbox from 'primevue/tristatecheckbox';
 
 // Vuetify
 import 'vuetify/styles'
@@ -58,7 +58,7 @@ app.component("DataTable", DataTable)
 app.component("PColumn", Column)
 app.component("PMessage", Message)
 app.component("VueDatePicker", VueDatePicker)
-app.component("VirtualScroller", VirtualScroller)
+app.component("TriStateCheckbox", TriStateCheckbox)
 
 // Mount
 app.mount("#app");

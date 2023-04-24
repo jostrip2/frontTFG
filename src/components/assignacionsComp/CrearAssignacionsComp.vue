@@ -59,7 +59,7 @@
         <v-snackbar v-model="snack" :timeout=3000>
             {{ messageSnack }}
             <template v-slot:actions>
-                <v-btn color="blue" variant="text" @click="closeDialog">
+                <v-btn color="blue" variant="text" @click="showSnack(false)">
                     Close
                 </v-btn>
             </template>
@@ -115,7 +115,7 @@ export default {
                 const url = process.env.VUE_APP_APIURL + "/assignacions";
                 const assignacio = {
                     selectedDates: this.getDies,
-                    UsuariId: this.propUser.id,
+                    UsuariId: this.propUser,
                     VideoId: this.selectedVideo.id
                 }
                 this.axios.post(url, assignacio, {

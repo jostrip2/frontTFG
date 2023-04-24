@@ -1,6 +1,6 @@
 <template>
     <div class="list">
-        <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="10" removableSort
+        <DataTable v-model:filters="filters" :value="getVideoInfo" dataKey="id" paginator :rows="10" removableSort
             tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedVideo"
             :globalFilterFields="['nom', 'descripcio']">
             <template #header>
@@ -13,17 +13,23 @@
             </template>
             <template #paginatorstart>
                 <div class="actions">
-                    <CrearVideoComp @createdVideo='postActionVideo' />
-                    <VeureVideoComp v-if="videoSelected" :selectedVideo="selectedVideo.codi" />
-                    <EditarVideoComp v-if="videoSelected" :selectedVideo="selectedVideo" @editedVideo='postActionVideo' />
-                    <EliminarVideoComp v-if="videoSelected" :selectedVideo="selectedVideo"
-                        @deletedVideo='postActionVideo' />
+                    <CrearAssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser"
+                        @assignedVideo="postActionVideo" />
+                    <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo.codi" />
                 </div>
             </template>
             <template #empty> No s'han trobat videos. </template>
-            <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
+            <template #loading> Carregant videos... </template>
+            <PColumn field="nom" sortable header="Nom" style="width: 150px;"></PColumn>
             <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
-            <PColumn field="areaExercici" header="Area" style="width: 200px;"></PColumn>
+            <PColumn field="areaExercici" header="Area" style="width: 100px;"></PColumn>
+            <PColumn field="dia" header="Data" style="width: 100px;"></PColumn>
+            <PColumn field="realitzat" header="Realitzat" dataType="boolean" style="width: 200px;">
+                <template #body="{ data }">
+                    <v-icon v-if="data.realitzat" color="green"> mdi-check-circle-outline </v-icon>
+                    <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
+                </template>
+            </PColumn>
         </DataTable>
     </div>
     <v-snackbar v-model="showSnack">
@@ -40,35 +46,32 @@
 <script>
 import { FilterMatchMode } from 'primevue/api';
 
-import CrearVideoComp from './CrearVideoComp.vue';
-import EditarVideoComp from './EditarVideoComp.vue';
-import EliminarVideoComp from './EliminarVideoComp.vue';
-import VeureVideoComp from './VeureVideoComp.vue';
+import CrearAssignacionsComp from './CrearAssignacionsComp.vue';
+import VeureVideoComp from '../videosComp/VeureVideoComp.vue';
 
 export default {
-    name: "VideosView",
+    name: "AssignacionsView",
     components: {
-        CrearVideoComp,
-        EditarVideoComp,
-        EliminarVideoComp,
+        CrearAssignacionsComp,
         VeureVideoComp
     },
     data() {
         return {
-            allVideos: [],
+            selectedUser: null,
             videos: [],
             selectedVideo: null,
             showSnack: false,
             message: '',
             filters: {
-                global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+                global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+                realitzat: { value: null, matchMode: FilterMatchMode.EQUALS }
             }
         };
     },
 
     methods: {
-        getVideos() {
-            const url = process.env.VUE_APP_APIURL + "/videos";
+        getAssignedVideos() {
+            const url = process.env.VUE_APP_APIURL + "/assignacions/" + this.selectedUser;
             this.axios.get(url, {
                 headers: {
                     'Authorization': 'Bearer ' + this.getToken
@@ -76,8 +79,7 @@ export default {
             })
                 .then(response => {
                     if (response.status == 200 && response.data) {
-                        this.allVideos = response.data
-                        this.videos = this.allVideos
+                        this.videos = response.data
                     }
                 })
                 .catch(error => {
@@ -86,13 +88,21 @@ export default {
                 })
         },
 
+        formatData(data) {
+            return data.split('-').reverse().join('-')
+        },
+
         postActionVideo(message) {
             this.showMessage(message)
             this.refresh()
         },
 
         refresh() {
-            this.getVideos()
+            this.getAssignedVideos()
+        },
+
+        getSelectedUser() {
+            this.selectedUser = this.$store.getters.getSelectedUser
         },
 
         showMessage(message) {
@@ -102,8 +112,19 @@ export default {
     },
 
     computed: {
-        videoSelected() {
-            return this.selectedVideo != null
+        getVideoInfo() {
+            return this.videos.map((video) => {
+                const data = this.formatData(video.dia);
+                return {
+                    "id": video.id,
+                    "dia": data,
+                    "realitzat": video.realitzat,
+                    "nom": video.Video.nom,
+                    "codi": video.Video.codi,
+                    "descripcio": video.Video.descripcio,
+                    "areaExercici": video.Video.areaExercici
+                }
+            })
         },
 
         getToken() {
@@ -112,7 +133,8 @@ export default {
     },
 
     mounted() {
-        this.getVideos();
+        this.getSelectedUser();
+        this.getAssignedVideos();
     }
 }
 </script>

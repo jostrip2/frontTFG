@@ -4,11 +4,10 @@ export default new Vuex.Store({
   state: {
     user: {
       username: '',
-      email: '',
-      numMobil: 0,
       rol: ''
     },
-    token: ''
+    token: '',
+    selectedUser: null
   },
   getters: {
     isAuthenticated(state) {
@@ -18,6 +17,10 @@ export default new Vuex.Store({
     isAdmin(state) {
       return state.user.rol == "Administrador"
     },
+
+    getSelectedUser(state) {
+      return state.selectedUser
+    }
   },
   mutations: {
     setUser(state, user) {
@@ -28,7 +31,13 @@ export default new Vuex.Store({
 
     logOut(state) {
       state.user.username = "";
+      state.user.rol = "";
       state.token = "";
+      state.selectedUser = null;
+    },
+
+    setSelectedUser(state, userId) {
+      state.selectedUser = userId;
     }
   },
   actions: {

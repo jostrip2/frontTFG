@@ -50,7 +50,7 @@ export default {
         },
 
         linkVideo() {
-            return 'https://drive.google.com/file/d/' + this.propVideo.codi + '/preview'
+            return 'https://drive.google.com/file/d/' + this.propVideo + '/preview'
         }
     }
 }
