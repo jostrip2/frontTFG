@@ -23,7 +23,8 @@
                     <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
                         :allUsers="allUsers" @editedUser="postUsuari" />
                     <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" @deletedUser="postUsuari" />
-                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser" />
+                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser"
+                        @assignedVideo="postUsuari" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>
