@@ -22,8 +22,8 @@
                     <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
                     <EditarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" :allFisios="getFisios"
                         :allUsers="allUsers" @editedUser="postUsuari" />
-                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser" />
                     <EliminarUserComp v-if="selectedUser != null" :selectedUser="selectedUser" @deletedUser="postUsuari" />
+                    <AssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>

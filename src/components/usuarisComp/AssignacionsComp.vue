@@ -19,9 +19,10 @@
                 <v-card-text id="cardContent">
                     <div id="videoSelect">
                         <h4 class="titleDiv">Selecció de video</h4>
-                        <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="3"
-                            :alwaysShowPaginator=false removableSort :metaKeySelection=false selectionMode="single"
-                            v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio']">
+                        <DataTable :value="videos" dataKey="id" paginator :rows="3" :alwaysShowPaginator=false removableSort
+                            :metaKeySelection=false selectionMode="single" scrollable scrollHeight="800px"
+                            v-model:selection="selectedVideo" :class="'p-datatable-sm'" v-model:filters="filters"
+                            :globalFilterFields="['nom', 'areaExercici']">
                             <template #header>
                                 <div class="search">
                                     <span class="p-input-icon-left">
@@ -33,38 +34,20 @@
                             </template>
                             <template #empty> No s'han trobat videos. </template>
                             <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
-                            <PColumn field="descripcio" header="Descripcio" style="width: 200px;"></PColumn>
-                            <PColumn field="areaExercici" sortable header="Area" style="width: 150px;"></PColumn>
+                            <PColumn field="areaExercici" sortable header="Area" style="width: 100px;"></PColumn>
                         </DataTable>
                     </div>
                     <div id="dateSelect">
                         <h4 class="titleDiv">Selecció de dies</h4>
-                        <div id="checks">
-                            <v-checkbox v-model="checkDies" label="Per dies" @change="controlChecks('checkDies')"
-                                hideDetails></v-checkbox>
-                            <v-checkbox v-model="checkSetmana" label="Per dies de la setmana"
-                                @change="controlChecks('checkSetmana')" hideDetails></v-checkbox>
-                        </div>
-                        <div v-if="checkDies" class="dateSelect_checkX">
-                            <div>
-                                <VueDatePicker id="calendar" v-model="dies" multi-dates multi-dates-limit="6" auto-apply
-                                    inline :enable-time-picker="false" />
-                            </div>
-                            <div>
-                                <p id="selectedDate_checkDies">Dies seleccionats:</p>
-                                <v-list lines="one" density="compact">
-                                    <v-list-item v-for="dia in getDies" :key="dia" :title="dia"></v-list-item>
-                                </v-list>
-                            </div>
-                        </div>
-                        <div v-if="checkSetmana" class="dateSelect_checkX">
-                            <p id="selectedDate_checkSetmana">Dies seleccionats: {{ diesSet }}</p>
+                        <div class="dateSelect_calendar">
+                            <VueDatePicker v-model="selectedDates" multi-dates auto-apply inline
+                                :enable-time-picker="false" />
                         </div>
                     </div>
                 </v-card-text>
                 <v-card-actions id="cardActions">
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="showDialog(false)">
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDialog">
                         Cancelar
                     </v-btn>
                     <v-btn color="blue-darken-1" variant="text" @click="assignarVideos">
@@ -74,7 +57,7 @@
             </v-card>
         </v-dialog>
         <v-snackbar v-model="snack" :timeout=3000>
-            Formulari no correcte
+            {{ messageSnack }}
             <template v-slot:actions>
                 <v-btn color="blue" variant="text" @click="closeDialog">
                     Close
@@ -95,13 +78,10 @@ export default {
         return {
             videos: null,
             selectedVideo: null,
-            checkDies: false,
-            checkSetmana: false,
-            checkTots: false,
-            dies: [],
-            diesSet: [],
+            selectedDates: [],
             dialog: false,
             snack: false,
+            messageSnack: '',
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             },
@@ -127,50 +107,72 @@ export default {
         },
 
         checkSelection() {
-            return this.selectedVideo != null && (this.dies.length > 0 || this.diesSet.length > 0)
+            return this.selectedVideo != null && this.selectedDates.length > 0
         },
 
         assignarVideos() {
             if (this.checkSelection()) {
-                console.log('Video assignat')
+                const url = process.env.VUE_APP_APIURL + "/assignacions";
+                const assignacio = {
+                    selectedDates: this.getDies,
+                    UsuariId: this.propUser.id,
+                    VideoId: this.selectedVideo.id
+                }
+                this.axios.post(url, assignacio, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.getToken
+                    }
+                })
+                    .then(response => {
+                        if (response.status == 201) {
+                            const message = 'Videos assignats correctament'
+                            this.$emit('assignedVideo', message)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        const message = "S'ha produit un error a l'assignar els videos"
+                        this.$emit('assignedVideo', message)
+                    })
+                this.closeDialog()
             }
             else {
-                console.log('Video no assignat')
-            }
-        },
-
-        controlChecks(selectedCheck) {
-            switch (selectedCheck) {
-                case 'checkDies':
-                    this.checkSetmana = false;
-                    if (!this.checkDies) this.dies = [];
-                    else this.diesSet = [];
-                    break
-                case 'checkSetmana':
-                    this.checkDies = false;
-                    if (!this.checkSetmana) this.diesSet = [];
-                    else this.dies = [];
-                    break
+                this.messageSnack = this.getMessageSnack();
+                this.showSnack(true);
             }
         },
 
         formatDate(date) {
             return date.map(date => {
+                console.log(date)
                 let newDate = new Date(date)
-                let day = newDate.getDate()
-                let month = newDate.getMonth() + 1
+                let day = newDate.getDate().toString().padStart(2, "0")
+                let month = (newDate.getMonth() + 1).toString().padStart(2, "0")
                 let year = newDate.getFullYear()
-                return day + '/' + month + '/' + year
+                return year + '-' + month + '-' + day
             })
         },
 
+        getMessageSnack() {
+            if (this.selectedVideo == null && this.selectedDates.length == 0)
+                return 'No hi ha video ni data seleccionats'
+
+            if (this.selectedVideo == null)
+                return 'No hi ha video seleccionat'
+
+            if (this.selectedDates.length == 0)
+                return 'No hi ha data seleccionada'
+
+        },
+
         closeDialog() {
-            this.showDialog(false)
             this.clearFields()
+            this.showDialog(false)
         },
 
         clearFields() {
-            this.videos = null
+            this.selectedDates = []
+            this.selectedVideo = null
         },
 
         showDialog(bool) {
@@ -188,8 +190,8 @@ export default {
         },
 
         getDies() {
-            if (this.dies != null) {
-                const dies = Object.assign([], this.dies)
+            if (this.selectedDates.length > 0) {
+                const dies = Object.assign([], this.selectedDates)
                 return this.formatDate(dies.sort((a, b) => Date.parse(a) - Date.parse(b)))
             }
             else return null
@@ -212,7 +214,7 @@ export default {
 }
 
 #dialog {
-    width: 80%;
+    width: 800px;
     height: 100%;
 }
 
@@ -224,13 +226,13 @@ export default {
 #videoSelect {
     margin: 10px 5px 10px 0;
     border: 1px solid rgb(221, 221, 221);
-    width: 652px;
+    width: 400px;
 }
 
 #dateSelect {
     margin: 10px 0 10px 5px;
     border: 1px solid rgb(221, 221, 221);
-    width: 648px;
+    width: 300px;
 }
 
 .titleDiv {
@@ -240,19 +242,10 @@ export default {
     padding-left: 10px;
 }
 
-#checks {
+.dateSelect_calendar {
     display: flex;
-    border: 1px solid rgb(221, 221, 221);
-}
-
-.dateSelect_checkX {
-    display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     margin: 10px;
-}
-
-#calendar {
-    margin-right: 10px;
 }
 
 #cardActions {
