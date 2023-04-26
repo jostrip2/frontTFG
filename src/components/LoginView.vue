@@ -27,6 +27,7 @@ import commonMethods from '@/commonMethods';
 export default {
     name: "LoginView",
     components: {},
+    emits: ['loggedUser'],
     data() {
         return {
             user: {
@@ -62,6 +63,7 @@ export default {
             sessionStorage.setItem('username', user.username)
             sessionStorage.setItem('rol', user.rol)
             sessionStorage.setItem('token', user.token)
+            this.$emit('loggedUser', commonMethods.isAdmin())
         },
 
         redirect() {

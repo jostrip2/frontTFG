@@ -3,14 +3,16 @@
         <v-card>
             <v-layout>
                 <v-app-bar v-if="!isLogin" class="justify-left" color="blue-darken-3">
-                    <div class="barLeft">
-                        <v-toolbar-title class="title">FisioApp</v-toolbar-title>
+                    <div id="barLeft">
+                        <v-toolbar-title id="title">FisioApp</v-toolbar-title>
 
-                        <v-btn v-if="isAdmin" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account"> Usuaris</v-btn>
-                        <p v-if="isAdmin">|</p>
-                        <v-btn v-if="isAdmin" :to="{ name: 'VideosView' }" prepend-icon="mdi-video">Videos</v-btn>
+                        <v-btn v-if="isAdmin || isAdminSession" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account">
+                            Usuaris</v-btn>
+                        <p v-if="isAdmin || isAdminSession">|</p>
+                        <v-btn v-if="isAdmin || isAdminSession" :to="{ name: 'VideosView' }"
+                            prepend-icon="mdi-video">Videos</v-btn>
                     </div>
-                    <div class="barRigth">
+                    <div id="barRigth">
                         <v-btn prepend-icon="mdi-email">Missatges</v-btn>
                         <p>|</p>
                         <v-btn @click="veurePerfil" prepend-icon="mdi-account-details">Perfil</v-btn>
@@ -20,7 +22,7 @@
                 </v-app-bar>
 
                 <v-main id="content">
-                    <RouterView />
+                    <RouterView @loggedUser="setIsAdmin" />
                 </v-main>
             </v-layout>
         </v-card>
@@ -38,7 +40,7 @@ export default {
     },
     data() {
         return {
-
+            isAdmin: false
         }
     },
     computed: {
@@ -46,7 +48,7 @@ export default {
             return this.$route.name === 'LoginView'
         },
 
-        isAdmin() {
+        isAdminSession() {
             return commonMethods.isAdmin()
         }
     },
@@ -54,6 +56,10 @@ export default {
         logout() {
             sessionStorage.clear()
             this.$router.push('/')
+        },
+
+        setIsAdmin(bool) {
+            this.isAdmin = bool
         },
 
         veurePerfil() {
@@ -81,19 +87,19 @@ p {
     margin-top: 5px;
 }
 
-.barLeft {
+#barLeft {
     display: flex;
     margin-left: 15px;
     margin-right: auto;
     padding-left: 35px;
 }
 
-.title {
+#title {
     margin-right: 20px;
     margin-top: 3px;
 }
 
-.barRigth {
+#barRigth {
     display: flex;
     margin-left: auto;
     margin-right: 15px;
