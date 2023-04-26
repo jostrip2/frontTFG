@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import commonMethods from '@/commonMethods';
+
 export default {
     name: "EliminarUserComp",
     props: ['selectedUser'],
@@ -49,7 +51,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/users/" + this.propUser.username;
             this.axios.delete(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
@@ -78,10 +80,6 @@ export default {
     computed: {
         propUser() {
             return this.selectedUser
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     }
 

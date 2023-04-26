@@ -3,7 +3,6 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import App from "./components/App.vue";
 import router from "./router";
-import store from "./store/store";
 
 // PrimeVue
 import PrimeVue from 'primevue/config';
@@ -46,7 +45,6 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 // App
 const app = createApp(App);
 
-app.use(store)
 app.use(router)
 app.use(VueAxios, axios)
 app.use(vuetify)

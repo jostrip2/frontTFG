@@ -53,6 +53,7 @@
 
 <script>
 import isUrl from 'is-url'
+import commonMethods from '@/commonMethods';
 
 export default {
     name: "EditarVideoComp",
@@ -98,7 +99,7 @@ export default {
                 }
                 this.axios.patch(url, video, {
                     headers: {
-                        'Authorization': 'Bearer ' + this.getToken
+                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
                     }
                 })
                     .then(response => {
@@ -140,10 +141,6 @@ export default {
 
         getVideoCodi() {
             return this.linkVideo.split('/')[5]
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     },
     mounted() {

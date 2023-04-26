@@ -1,8 +1,8 @@
 <template>
     <div class="list">
         <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" removableSort
-            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedUser"
-            :globalFilterFields="['nomComplet', 'username']">
+            :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+            v-model:selection="selectedUser" :globalFilterFields="['nomComplet', 'username']">
             <template #header>
                 <div class="search">
                     <span class="p-input-icon-left">
@@ -20,13 +20,14 @@
             <template #paginatorstart>
                 <div class="actions">
                     <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                    <EditarUserComp v-if="userSelected" :selectedUser="selectedUser" :allFisios="getFisios"
+                    <EditarUserComp v-if="userIsSelected" :selectedUser="selectedUser" :allFisios="getFisios"
                         :allUsers="allUsers" @editedUser="postUsuari" />
-                    <EliminarUserComp v-if="userSelected" :selectedUser="selectedUser" @deletedUser="postUsuari" />
-                    <VeureAssignacionsComp v-if="userSelected" :selectedUser="selectedUser.id" />
+                    <EliminarUserComp v-if="userIsSelected" :selectedUser="selectedUser" @deletedUser="postUsuari" />
+                    <VeureAssignacionsComp v-if="userIsSelected" :selectedUser="selectedUser" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>
+            <template #loading> Carregant usuaris... </template>
             <PColumn field="nomComplet" sortable header="Nom" style="width: 200px;"></PColumn>
             <PColumn field="username" sortable header="Username" style="width: 200px;"></PColumn>
             <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
@@ -48,6 +49,7 @@
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
+import commonMethods from '@/commonMethods';
 
 import CrearUserComp from './CrearUserComp.vue'
 import EditarUserComp from './EditarUserComp.vue'
@@ -71,6 +73,7 @@ export default {
             showSnack: false,
             message: '',
             selectedUser: null,
+            loading: false,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             }
@@ -78,16 +81,18 @@ export default {
     },
     methods: {
         getUsers() {
+            this.loading = true
             const url = process.env.VUE_APP_APIURL + "/users";
             this.axios.get(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
                     if (response.status == 200 && response.data) {
                         this.allUsers = response.data
                         this.users = this.allUsers
+                        this.loading = false
                     }
                 })
                 .catch(error => {
@@ -111,9 +116,9 @@ export default {
         },
 
         checkRol(rol) {
-            const isAdmin = rol == 'Administrador'
-            const isClient = rol == 'Client'
-            return (isAdmin && this.checkAdmin) || (isClient && this.checkClient) || (!this.checkAdmin && !this.checkClient)
+            const rolIsAdmin = rol == 'Administrador'
+            const rolIsClient = rol == 'Client'
+            return (rolIsAdmin && this.checkAdmin) || (rolIsClient && this.checkClient) || (!this.checkAdmin && !this.checkClient)
         },
 
         refresh() {
@@ -143,20 +148,19 @@ export default {
             return fisios;
         },
 
-        userSelected() {
+        userIsSelected() {
             return this.selectedUser != null
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     },
 
     mounted() {
-        if (!this.$store.getters.isAuthenticated || !this.$store.getters.isAdmin) {
+        // si no esta autenticat o esta autenticat pero no es admin, no pot accedir a la pàgina
+        if (!commonMethods.isAuthenticated() || (commonMethods.isAuthenticated() && !commonMethods.isAdmin())) {
             this.$router.push("/")
         }
-        this.getUsers();
+        else {
+            this.getUsers();
+        }
     }
 };
 </script>

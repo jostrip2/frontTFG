@@ -69,6 +69,7 @@
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
+import commonMethods from '@/commonMethods';
 
 export default {
     name: "AssignacionsComp",
@@ -120,7 +121,7 @@ export default {
                 }
                 this.axios.post(url, assignacio, {
                     headers: {
-                        'Authorization': 'Bearer ' + this.getToken
+                        'Authorization': 'Bearer ' + commonMethods.getToken()
                     }
                 })
                     .then(response => {
@@ -137,8 +138,7 @@ export default {
                 this.closeDialog()
             }
             else {
-                this.messageSnack = this.getMessageSnack();
-                this.showSnack(true);
+                this.showMessage(this.getMessageSnack())
             }
         },
 
@@ -174,6 +174,11 @@ export default {
             this.selectedVideo = null
         },
 
+        showMessage(message) {
+            this.messageSnack = message
+            this.snack = true
+        },
+
         showDialog(bool) {
             this.dialog = bool
         },
@@ -194,10 +199,6 @@ export default {
                 return this.formatDate(dies.sort((a, b) => Date.parse(a) - Date.parse(b)))
             }
             else return null
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     },
 

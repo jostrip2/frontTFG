@@ -54,6 +54,7 @@
 
 <script>
 import isUrl from 'is-url'
+import commonMethods from '@/commonMethods';
 
 export default {
     name: "CrearVideoComp",
@@ -100,7 +101,7 @@ export default {
                 this.video.codi = this.getCodiVideo;
                 this.axios.post(url, this.video, {
                     headers: {
-                        'Authorization': 'Bearer ' + this.getToken
+                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
                     }
                 })
                     .then(response => {
@@ -142,10 +143,6 @@ export default {
     computed: {
         getCodiVideo() {
             return this.linkVideo.split('/')[5]
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     }
 }

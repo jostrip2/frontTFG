@@ -1,8 +1,8 @@
 <template>
     <div class="list">
         <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="10" removableSort
-            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedVideo"
-            :globalFilterFields="['nom', 'descripcio']">
+            :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+            v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio']">
             <template #header>
                 <div class="search">
                     <span class="p-input-icon-left">
@@ -14,13 +14,14 @@
             <template #paginatorstart>
                 <div class="actions">
                     <CrearVideoComp @createdVideo='postActionVideo' />
-                    <VeureVideoComp v-if="videoSelected" :selectedVideo="selectedVideo.codi" />
-                    <EditarVideoComp v-if="videoSelected" :selectedVideo="selectedVideo" @editedVideo='postActionVideo' />
-                    <EliminarVideoComp v-if="videoSelected" :selectedVideo="selectedVideo"
+                    <VeureVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo.codi" />
+                    <EditarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" @editedVideo='postActionVideo' />
+                    <EliminarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo"
                         @deletedVideo='postActionVideo' />
                 </div>
             </template>
             <template #empty> No s'han trobat videos. </template>
+            <template #loading> Carregant videos... </template>
             <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
             <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
             <PColumn field="areaExercici" header="Area" style="width: 200px;"></PColumn>
@@ -39,11 +40,11 @@
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
-
 import CrearVideoComp from './CrearVideoComp.vue';
 import EditarVideoComp from './EditarVideoComp.vue';
 import EliminarVideoComp from './EliminarVideoComp.vue';
 import VeureVideoComp from './VeureVideoComp.vue';
+import commonMethods from '@/commonMethods';
 
 export default {
     name: "VideosView",
@@ -55,11 +56,11 @@ export default {
     },
     data() {
         return {
-            allVideos: [],
             videos: [],
             selectedVideo: null,
             showSnack: false,
             message: '',
+            loading: false,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS }
             }
@@ -68,16 +69,17 @@ export default {
 
     methods: {
         getVideos() {
+            this.loading = true
             const url = process.env.VUE_APP_APIURL + "/videos";
             this.axios.get(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
                     if (response.status == 200 && response.data) {
-                        this.allVideos = response.data
-                        this.videos = this.allVideos
+                        this.videos = response.data
+                        this.loading = false
                     }
                 })
                 .catch(error => {
@@ -102,17 +104,19 @@ export default {
     },
 
     computed: {
-        videoSelected() {
+        videoIsSelected() {
             return this.selectedVideo != null
-        },
-
-        getToken() {
-            return this.$store.state.token
-        },
+        }
     },
 
     mounted() {
-        this.getVideos();
+        // si no esta autenticat o està autenticat pero no es admin, no pot accedir a la pàgina
+        if (!commonMethods.isAuthenticated() || (commonMethods.isAuthenticated() && !commonMethods.isAdmin())) {
+            this.$router.push("/")
+        }
+        else {
+            this.getVideos();
+        }
     }
 }
 </script>

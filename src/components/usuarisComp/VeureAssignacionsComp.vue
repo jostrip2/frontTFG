@@ -17,7 +17,7 @@ export default {
 
     methods: {
         toAssignacions() {
-            this.$store.commit('setSelectedUser', this.propUser)
+            sessionStorage.setItem('selectedUser', JSON.stringify(this.propUser))
             this.$router.push({ name: 'AssignacionsView' })
         }
     },

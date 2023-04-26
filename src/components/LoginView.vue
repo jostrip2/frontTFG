@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import commonMethods from '@/commonMethods';
+
 export default {
     name: "LoginView",
     components: {},
@@ -45,13 +47,8 @@ export default {
                             token: response.data.token,
                             rol: response.data.rol
                         }
-                        this.$store.commit('setUser', user)
-                        if (user.rol == 'Administrador') {
-                            this.$router.push("/users")
-                        }
-                        else {
-                            this.$router.push("/")
-                        }
+                        this.setUser(user)
+                        this.redirect()
                     }
                 })
                 .catch(error => {
@@ -60,6 +57,21 @@ export default {
                     this.showError = true
                 })
         },
+
+        setUser(user) {
+            sessionStorage.setItem('username', user.username)
+            sessionStorage.setItem('rol', user.rol)
+            sessionStorage.setItem('token', user.token)
+        },
+
+        redirect() {
+            if (commonMethods.isAdmin()) {
+                this.$router.push("/users")
+            }
+            else {
+                this.$router.push("/home")
+            }
+        }
     },
 };
 </script>

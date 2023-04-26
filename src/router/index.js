@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../components/LoginView'
+import HomeView from '../components/HomeView'
 import UsuarisView from '../components/usuarisComp/UsuarisView'
 import VideosView from '../components/videosComp/VideosView'
 import AssignacionsView from '../components/assignacionsComp/AssignacionsView'
@@ -13,6 +14,11 @@ const routes = [
     path: '/login',
     name: "LoginView",
     component: LoginView
+  },
+  {
+    path: '/home',
+    name: "HomeView",
+    component: HomeView
   },
   {
     path: '/users',

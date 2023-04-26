@@ -29,6 +29,7 @@
 
 <script>
 import { RouterView } from 'vue-router';
+import commonMethods from '@/commonMethods';
 
 export default {
     name: "App",
@@ -45,17 +46,13 @@ export default {
             return this.$route.name === 'LoginView'
         },
 
-        isLoggedIn() {
-            return this.$store.getters.isAuthenticated
-        },
-
         isAdmin() {
-            return this.$store.getters.isAdmin
+            return commonMethods.isAdmin()
         }
     },
     methods: {
         logout() {
-            this.$store.commit('logOut')
+            sessionStorage.clear()
             this.$router.push('/')
         },
 

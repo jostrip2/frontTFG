@@ -55,6 +55,8 @@
 </template>
 
 <script>
+import commonMethods from '@/commonMethods';
+
 export default {
     name: "EditarUserComp",
     props: ['selectedUser', 'allFisios'],
@@ -109,7 +111,7 @@ export default {
             }
             this.axios.patch(url, user, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
@@ -141,10 +143,6 @@ export default {
 
         fisios() {
             return this.allFisios
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     }
 

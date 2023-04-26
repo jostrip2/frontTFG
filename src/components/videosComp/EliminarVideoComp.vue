@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import commonMethods from '@/commonMethods';
+
 export default {
     name: "EliminarVideoComp",
     props: ['selectedVideo'],
@@ -48,7 +50,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/videos/" + this.propVideo.id;
             this.axios.delete(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
@@ -77,10 +79,6 @@ export default {
     computed: {
         propVideo() {
             return this.selectedVideo
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     }
 

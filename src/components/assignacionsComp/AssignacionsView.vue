@@ -1,8 +1,9 @@
 <template>
     <div class="list">
+        <h2 id="whichUser" v-if="selectedUser != null">Videos assignats a {{ selectedUser.nomComplet }}</h2>
         <DataTable v-model:filters="filters" :value="getVideoInfo" dataKey="id" paginator :rows="10" removableSort
-            tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single" v-model:selection="selectedVideo"
-            :globalFilterFields="['nom', 'descripcio']">
+            :loading="loading" filterDisplay="menu" tableStyle="min-width: 50rem" :metaKeySelection=false
+            selectionMode="single" v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio', 'dia']">
             <template #header>
                 <div class="search">
                     <span class="p-input-icon-left">
@@ -13,21 +14,25 @@
             </template>
             <template #paginatorstart>
                 <div class="actions">
-                    <CrearAssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser"
+                    <CrearAssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser.id"
                         @assignedVideo="postActionVideo" />
                     <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo.codi" />
                 </div>
             </template>
-            <template #empty> No s'han trobat videos. </template>
+            <template #empty> No hi ha videos assignats. </template>
             <template #loading> Carregant videos... </template>
             <PColumn field="nom" sortable header="Nom" style="width: 150px;"></PColumn>
             <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
             <PColumn field="areaExercici" header="Area" style="width: 100px;"></PColumn>
-            <PColumn field="dia" header="Data" style="width: 100px;"></PColumn>
+            <PColumn field="dia" header="Dia" style="width: 100px;"></PColumn>
             <PColumn field="realitzat" header="Realitzat" dataType="boolean" style="width: 200px;">
                 <template #body="{ data }">
                     <v-icon v-if="data.realitzat" color="green"> mdi-check-circle-outline </v-icon>
                     <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
+                </template>
+                <template #filter="{ filterModel }">
+                    <label for="realitzat-filter" class="font-bold"> Realitzat </label>
+                    <TriStateCheckbox v-model="filterModel.value" inputId="realitzat-filter" />
                 </template>
             </PColumn>
         </DataTable>
@@ -45,7 +50,7 @@
 
 <script>
 import { FilterMatchMode } from 'primevue/api';
-
+import commonMethods from '@/commonMethods';
 import CrearAssignacionsComp from './CrearAssignacionsComp.vue';
 import VeureVideoComp from '../videosComp/VeureVideoComp.vue';
 
@@ -62,6 +67,7 @@ export default {
             selectedVideo: null,
             showSnack: false,
             message: '',
+            loading: false,
             filters: {
                 global: { value: null, matchMode: FilterMatchMode.CONTAINS },
                 realitzat: { value: null, matchMode: FilterMatchMode.EQUALS }
@@ -71,21 +77,29 @@ export default {
 
     methods: {
         getAssignedVideos() {
-            const url = process.env.VUE_APP_APIURL + "/assignacions/" + this.selectedUser;
-            this.axios.get(url, {
-                headers: {
-                    'Authorization': 'Bearer ' + this.getToken
-                }
-            })
-                .then(response => {
-                    if (response.status == 200 && response.data) {
-                        this.videos = response.data
+            if (this.selectedUser != null) {
+                this.loading = true
+                const url = process.env.VUE_APP_APIURL + "/assignacions/" + this.selectedUser.id;
+                this.axios.get(url, {
+                    headers: {
+                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
                     }
                 })
-                .catch(error => {
-                    console.log(error);
-                    this.showMessage(error)
-                })
+                    .then(response => {
+                        if (response.status == 200 && response.data) {
+                            this.videos = response.data
+                            this.loading = false
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.showMessage(error)
+                    })
+            }
+        },
+
+        getSelectedUser() {
+            this.selectedUser = JSON.parse(sessionStorage.getItem('selectedUser'))
         },
 
         formatData(data) {
@@ -99,10 +113,6 @@ export default {
 
         refresh() {
             this.getAssignedVideos()
-        },
-
-        getSelectedUser() {
-            this.selectedUser = this.$store.getters.getSelectedUser
         },
 
         showMessage(message) {
@@ -125,21 +135,31 @@ export default {
                     "areaExercici": video.Video.areaExercici
                 }
             })
-        },
-
-        getToken() {
-            return this.$store.state.token
-        },
+        }
     },
 
     mounted() {
-        this.getSelectedUser();
-        this.getAssignedVideos();
+        // si no esta autenticat o esta autenticat pero no es admin, no pot accedir a la pàgina
+        if (!commonMethods.isAuthenticated() || (commonMethods.isAuthenticated() && !commonMethods.isAdmin())) {
+            this.$router.push("/")
+        }
+        else {
+            this.getSelectedUser();
+            this.getAssignedVideos();
+        }
     }
 }
 </script>
 
 <style scoped>
+#whichUser {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 10px;
+
+}
+
 .search {
     display: flex;
     margin-left: 0;
@@ -147,12 +167,8 @@ export default {
     padding: 10px;
 }
 
-.checks {
-    display: flex;
-}
-
 .list {
-    margin: 50px 50px 0 50px;
+    margin: 30px 50px 0 50px;
     border: 1px solid rgb(221, 221, 221);
 }
 

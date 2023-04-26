@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import commonMethods from '@/commonMethods';
+
 export default {
     name: "CrearUserComp",
     props: ['allFisios'],
@@ -118,7 +120,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/users";
             this.axios.post(url, this.user, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
                 }
             })
                 .then(response => {
@@ -169,10 +171,6 @@ export default {
     computed: {
         fisios() {
             return this.allFisios
-        },
-
-        getToken() {
-            return this.$store.state.token
         }
     }
 }
