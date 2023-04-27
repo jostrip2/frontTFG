@@ -64,6 +64,7 @@ export default {
         EliminarUserComp,
         VeureAssignacionsComp
     },
+    emits: ['loggedUser'],
     data() {
         return {
             allUsers: [],

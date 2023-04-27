@@ -3,7 +3,7 @@
         <h2 id="whichUser" v-if="selectedUser != null">Videos assignats a {{ selectedUser.nomComplet }}</h2>
         <DataTable v-model:filters="filters" :value="getVideoInfo" dataKey="id" paginator :rows="10" removableSort
             :loading="loading" filterDisplay="menu" tableStyle="min-width: 50rem" :metaKeySelection=false
-            selectionMode="single" v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio', 'dia']">
+            selectionMode="single" v-model:selection="selectedAssign" :globalFilterFields="['nom', 'descripcio', 'dia']">
             <template #header>
                 <div class="search">
                     <span class="p-input-icon-left">
@@ -15,8 +15,10 @@
             <template #paginatorstart>
                 <div class="actions">
                     <CrearAssignacionsComp v-if="selectedUser != null" :selectedUser="selectedUser.id"
-                        @assignedVideo="postActionVideo" />
-                    <VeureVideoComp v-if="selectedVideo != null" :selectedVideo="selectedVideo.codi" />
+                        @assignedVideo="postAssign" />
+                    <VeureVideoComp v-if="selectedAssign != null" :selectedVideo="selectedAssign" />
+                    <EliminarAssignacionsComp v-if="selectedAssign != null" :selectedAssign="selectedAssign"
+                        @deletedAssign="postAssign" />
                 </div>
             </template>
             <template #empty> No hi ha videos assignats. </template>
@@ -53,18 +55,21 @@ import { FilterMatchMode } from 'primevue/api';
 import commonMethods from '@/commonMethods';
 import CrearAssignacionsComp from './CrearAssignacionsComp.vue';
 import VeureVideoComp from '../videosComp/VeureVideoComp.vue';
+import EliminarAssignacionsComp from './EliminarAssignacionsComp.vue';
 
 export default {
     name: "AssignacionsView",
     components: {
         CrearAssignacionsComp,
-        VeureVideoComp
+        VeureVideoComp,
+        EliminarAssignacionsComp
     },
+    emits: ['loggedUser'],
     data() {
         return {
             selectedUser: null,
             videos: [],
-            selectedVideo: null,
+            selectedAssign: null,
             showSnack: false,
             message: '',
             loading: false,
@@ -79,7 +84,7 @@ export default {
         getAssignedVideos() {
             if (this.selectedUser != null) {
                 this.loading = true
-                const url = process.env.VUE_APP_APIURL + "/assignacions/" + this.selectedUser.id;
+                const url = process.env.VUE_APP_APIURL + "/assignacions/client/" + this.selectedUser.id;
                 this.axios.get(url, {
                     headers: {
                         'Authorization': 'Bearer ' + commonMethods.sessionToken()
@@ -106,7 +111,7 @@ export default {
             return data.split('-').reverse().join('-')
         },
 
-        postActionVideo(message) {
+        postAssign(message) {
             this.showMessage(message)
             this.refresh()
         },

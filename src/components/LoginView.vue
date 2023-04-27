@@ -26,7 +26,6 @@ import commonMethods from '@/commonMethods';
 
 export default {
     name: "LoginView",
-    components: {},
     emits: ['loggedUser'],
     data() {
         return {

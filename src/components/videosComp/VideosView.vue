@@ -54,6 +54,7 @@ export default {
         EliminarVideoComp,
         VeureVideoComp
     },
+    emits: ['loggedUser'],
     data() {
         return {
             videos: [],

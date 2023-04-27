@@ -17,7 +17,7 @@
                     </v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    Aquesta és una decisió <b>irreversible</b>. Esteu segur que voleu eliminar l'usuari?
+                    Aquesta és una decisió <b>irreversible</b>. Esteu segur de que voleu eliminar l'usuari?
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
