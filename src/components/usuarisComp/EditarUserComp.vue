@@ -111,7 +111,7 @@ export default {
             }
             this.axios.patch(url, user, {
                 headers: {
-                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
             })
                 .then(response => {

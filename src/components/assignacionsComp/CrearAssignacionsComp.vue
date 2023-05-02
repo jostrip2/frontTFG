@@ -93,7 +93,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/videos";
             this.axios.get(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
             })
                 .then(response => {
@@ -121,7 +121,7 @@ export default {
                 }
                 this.axios.post(url, assignacio, {
                     headers: {
-                        'Authorization': 'Bearer ' + commonMethods.getToken()
+                        'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                     }
                 })
                     .then(response => {

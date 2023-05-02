@@ -99,7 +99,7 @@ export default {
                 }
                 this.axios.patch(url, video, {
                     headers: {
-                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                        'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                     }
                 })
                     .then(response => {

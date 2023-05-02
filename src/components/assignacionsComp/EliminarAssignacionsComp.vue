@@ -51,7 +51,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/assignacions/" + this.propAssign.id;
             this.axios.delete(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
             })
                 .then(response => {

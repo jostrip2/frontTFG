@@ -1,5 +1,5 @@
 
-function sessionToken() {
+function getSessionToken() {
     return sessionStorage.getItem('token')
 }
 
@@ -8,11 +8,16 @@ function isAdmin() {
 }
 
 function isAuthenticated() {
-    return this.sessionToken() != null
+    return this.getSessionToken() != null
+}
+
+function getLoggedUserId() {
+    return sessionStorage.getItem('userId')
 }
 
 export default {
-    sessionToken,
+    getSessionToken,
     isAdmin,
-    isAuthenticated
+    isAuthenticated,
+    getLoggedUserId
 }

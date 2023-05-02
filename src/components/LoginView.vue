@@ -43,6 +43,7 @@ export default {
                 .then(response => {
                     if (response.status == 200 && response.data.token && response.data.rol) {
                         const user = {
+                            id: response.data.id,
                             username: this.user.username,
                             token: response.data.token,
                             rol: response.data.rol
@@ -59,6 +60,7 @@ export default {
         },
 
         setUser(user) {
+            sessionStorage.setItem('userId', user.id)
             sessionStorage.setItem('username', user.username)
             sessionStorage.setItem('rol', user.rol)
             sessionStorage.setItem('token', user.token)

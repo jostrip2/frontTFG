@@ -87,7 +87,7 @@ export default {
                 const url = process.env.VUE_APP_APIURL + "/assignacions/client/" + this.selectedUser.id;
                 this.axios.get(url, {
                     headers: {
-                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                        'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                     }
                 })
                     .then(response => {

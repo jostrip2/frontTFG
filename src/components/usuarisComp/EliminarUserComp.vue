@@ -51,7 +51,7 @@ export default {
             const url = process.env.VUE_APP_APIURL + "/users/" + this.propUser.username;
             this.axios.delete(url, {
                 headers: {
-                    'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
             })
                 .then(response => {

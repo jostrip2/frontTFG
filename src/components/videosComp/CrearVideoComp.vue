@@ -101,7 +101,7 @@ export default {
                 this.video.codi = this.getCodiVideo;
                 this.axios.post(url, this.video, {
                     headers: {
-                        'Authorization': 'Bearer ' + commonMethods.sessionToken()
+                        'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                     }
                 })
                     .then(response => {
