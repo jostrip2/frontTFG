@@ -14,7 +14,7 @@
             <template #paginatorstart>
                 <div class="actions">
                     <CrearVideoComp @createdVideo='postActionVideo' />
-                    <VeureVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo.codi" />
+                    <VeureVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" />
                     <EditarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" @editedVideo='postActionVideo' />
                     <EliminarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo"
                         @deletedVideo='postActionVideo' />

@@ -35,9 +35,14 @@ const vuetify = createVuetify({
     }
 })
 
-// Calendar
+// Datepicker
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+
+// Calendar
+import { CalendarView, CalendarViewHeader } from "vue-simple-calendar";
+import "../node_modules/vue-simple-calendar/dist/style.css"
+import "../node_modules/vue-simple-calendar/dist/css/default.css"
 
 // Axios common header
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
@@ -57,6 +62,8 @@ app.component("PColumn", Column)
 app.component("PMessage", Message)
 app.component("VueDatePicker", VueDatePicker)
 app.component("TriStateCheckbox", TriStateCheckbox)
+app.component("CalendarView", CalendarView)
+app.component("CalendarViewHeader", CalendarViewHeader)
 
 // Mount
 app.mount("#app");
