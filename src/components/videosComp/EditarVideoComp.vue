@@ -44,7 +44,7 @@
             Formulari no correcte
             <template v-slot:actions>
                 <v-btn color="blue" variant="text" @click="showSnack(false)">
-                    Close
+                    Tancar
                 </v-btn>
             </template>
         </v-snackbar>

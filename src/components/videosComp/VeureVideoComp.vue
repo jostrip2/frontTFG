@@ -17,10 +17,14 @@
                     </v-toolbar-title>
                 </v-toolbar>
                 <iframe :src="linkVideo" width="640" height="480" allow="autoplay"></iframe>
+                <div id="videoDescription">
+                    <h3>{{ propVideo.nom }}</h3>
+                    <p> {{ propVideo.descripcio }}</p>
+                </div>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="showDialog(false)">
-                        Sortir
+                        Tancar
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -59,5 +63,9 @@ export default {
 <style scoped>
 div {
     padding: 5px;
+}
+
+#videoDescription {
+    margin: 10px 0 0 20px;
 }
 </style>

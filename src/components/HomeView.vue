@@ -27,7 +27,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="showVideo = false">
-                        Sortir
+                        Tancar
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -156,15 +156,7 @@ export default {
     border: 1px solid rgb(221, 221, 221);
 }
 
-#videoTitle {
-    margin: 10px 0 0 20px;
-}
-
 #videoDescription {
     margin: 10px 0 0 20px;
-}
-
-#checkboxLabel {
-    color: black;
 }
 </style>
