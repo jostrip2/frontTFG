@@ -18,6 +18,12 @@
                     </v-toolbar-title>
                 </v-toolbar>
                 <iframe :src="linkVideo" width="640" height="480" allow="autoplay"></iframe>
+                <div id="videoDescription">
+                    <h3>{{ selectedVideo.nom }}</h3>
+                    <p> {{ selectedVideo.descripcio }}</p>
+                    <v-switch v-model="selectedAssign.realitzat" :label="`Video realitzat: ${textRealitzacio}`"
+                        @change="marcarRealitzacio" hide-details inset></v-switch>
+                </div>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="showVideo = false">
@@ -52,6 +58,7 @@ export default {
             loggedUserId: "",
             videos: [],
             selectedVideo: null,
+            selectedAssign: null,
             showVideo: false,
             showDate: new Date(),
             items: [],
@@ -73,7 +80,7 @@ export default {
                 })
                     .then(response => {
                         if (response.status == 200 && response.data) {
-                            this.setItems(response.data)
+                            this.setItems(response.data);
                         }
                     })
                     .catch(error => {
@@ -85,14 +92,30 @@ export default {
 
         setItems(assigns) {
             this.assigns = assigns;
-            this.items = assigns.map(v => ({ "id": v.id, "startDate": v.dia, "title": v.Video.nom }))
+            this.items = assigns.map(v => ({ "id": v.id, "startDate": v.dia, "title": v.Video.nom }));
         },
 
         seeVideo(calendarItem) {
-            const assign = this.assigns.find(a => a.id == calendarItem.id);
-            console.log(assign);
-            this.selectedVideo = assign.Video
-            this.showVideo = true
+            this.selectedAssign = this.assigns.find(a => a.id == calendarItem.id);
+            this.selectedVideo = this.selectedAssign.Video;
+            this.showVideo = true;
+        },
+
+        marcarRealitzacio() {
+            const url = process.env.VUE_APP_APIURL + "/assignacions";
+            this.axios.patch(url, {
+                id: this.selectedAssign.id,
+                realitzacio: this.selectedAssign.realitzat
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
+                }
+            })
+                .then(this.getAssignedVideos)
+                .catch(error => {
+                    console.log(error);
+                    this.showMessage(error);
+                });
         },
 
         getLoggedUser() {
@@ -108,8 +131,10 @@ export default {
     computed: {
         linkVideo() {
             return 'https://drive.google.com/file/d/' + this.selectedVideo.codi + '/preview'
-            //https://drive.google.com/file/d/1lfInM3TqTdjGroYISqLok-MQmomBHNJq/view?usp=sharing
-            //https://drive.google.com/file/d/1lfInM3TqTdjGroYISqLok-MQmomBHNJq/preview
+        },
+
+        textRealitzacio() {
+            return this.selectedAssign.realitzat ? 'si' : 'no'
         }
     },
 
@@ -129,5 +154,17 @@ export default {
 #container {
     margin: 50px 50px 0 50px;
     border: 1px solid rgb(221, 221, 221);
+}
+
+#videoTitle {
+    margin: 10px 0 0 20px;
+}
+
+#videoDescription {
+    margin: 10px 0 0 20px;
+}
+
+#checkboxLabel {
+    color: black;
 }
 </style>
