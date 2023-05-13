@@ -1,5 +1,6 @@
 <template>
     <div id="container">
+        <h1>Els teus exercicis</h1>
         <CalendarView class="theme-default" :items="items" :show-date="showDate" :startingDayOfWeek="1"
             @click-item="seeVideo">
             <template #header="{ headerProps }">
@@ -92,7 +93,14 @@ export default {
 
         setItems(assigns) {
             this.assigns = assigns;
-            this.items = assigns.map(v => ({ "id": v.id, "startDate": v.dia, "title": v.Video.nom }));
+            this.items = assigns.map((a) => (
+                {
+                    "id": a.id,
+                    "startDate": a.dia,
+                    "title": a.Video.nom,
+                    "style": a.realitzat ? "background-color: rgb(0,255,0,.5);" : "background-color: rgb(255,0,0,.5);"
+                }
+            ));
         },
 
         seeVideo(calendarItem) {
@@ -153,7 +161,6 @@ export default {
 <style scoped>
 #container {
     margin: 50px 50px 0 50px;
-    border: 1px solid rgb(221, 221, 221);
 }
 
 #videoDescription {
