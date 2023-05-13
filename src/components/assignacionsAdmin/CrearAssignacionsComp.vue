@@ -126,13 +126,13 @@ export default {
                 })
                     .then(response => {
                         if (response.status == 201) {
-                            const message = 'Videos assignats correctament'
+                            const message = 'Video assignat correctament'
                             this.$emit('assignedVideo', message)
                         }
                     })
                     .catch(error => {
                         console.log(error);
-                        const message = "S'ha produit un error a l'assignar els videos"
+                        const message = "S'ha produit un error a l'assignar el video"
                         this.$emit('assignedVideo', message)
                     })
                 this.closeDialog()

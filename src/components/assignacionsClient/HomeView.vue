@@ -161,6 +161,7 @@ export default {
 <style scoped>
 #container {
     margin: 50px 50px 0 50px;
+    min-height: 600px;
 }
 
 #videoDescription {

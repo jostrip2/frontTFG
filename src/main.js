@@ -62,6 +62,8 @@ app.component("PColumn", Column)
 app.component("PMessage", Message)
 app.component("VueDatePicker", VueDatePicker)
 app.component("TriStateCheckbox", TriStateCheckbox)
+
+// Calendar component
 app.component("CalendarView", CalendarView)
 app.component("CalendarViewHeader", CalendarViewHeader)
 

@@ -54,7 +54,7 @@
 import { FilterMatchMode } from 'primevue/api';
 import commonMethods from '@/commonMethods';
 import CrearAssignacionsComp from './CrearAssignacionsComp.vue';
-import VeureVideoComp from '../videosComp/VeureVideoComp.vue';
+import VeureVideoComp from '../videosAdmin/VeureVideoComp.vue';
 import EliminarAssignacionsComp from './EliminarAssignacionsComp.vue';
 
 export default {

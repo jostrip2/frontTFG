@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../components/LoginView'
-import HomeView from '../components/HomeView'
-import UsuarisView from '../components/usuarisComp/UsuarisView'
-import VideosView from '../components/videosComp/VideosView'
-import AssignacionsView from '../components/assignacionsComp/AssignacionsView'
+import HomeView from '../components/assignacionsClient/HomeView'
+import UsuarisView from '../components/usuarisAdmin/UsuarisView'
+import VideosView from '../components/videosAdmin/VideosView'
+import AssignacionsView from '../components/assignacionsAdmin/AssignacionsView'
 
 const routes = [
   {
