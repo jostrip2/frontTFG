@@ -7,6 +7,7 @@
                 <CalendarViewHeader :header-props="headerProps" @input="setShowDate" />
             </template>
         </CalendarView>
+        <p>Nota: quan hagi acabat de fer els exercicis del dia, pot enviar un missatge al seu fisioterapeuta</p>
     </div>
     <div>
         <v-dialog v-model="showVideo" persistent width="unset">
@@ -27,7 +28,7 @@
                 </div>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="showVideo = false">
+                    <v-btn color="blue-darken-1" variant="text" @click="refresh">
                         Tancar
                     </v-btn>
                 </v-card-actions>
@@ -71,6 +72,7 @@ export default {
         setShowDate(d) {
             this.showDate = d;
         },
+
         getAssignedVideos() {
             if (this.loggedUserId != "") {
                 const url = process.env.VUE_APP_APIURL + "/assignacions/client/" + this.loggedUserId;
@@ -119,7 +121,6 @@ export default {
                     'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
             })
-                .then(this.getAssignedVideos)
                 .catch(error => {
                     console.log(error);
                     this.showMessage(error);
@@ -128,6 +129,11 @@ export default {
 
         getLoggedUser() {
             this.loggedUserId = commonMethods.getLoggedUserId();
+        },
+
+        refresh() {
+            this.showVideo = false;
+            this.getAssignedVideos();
         },
 
         showMessage(message) {

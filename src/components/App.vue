@@ -1,4 +1,10 @@
 <template>
+    <Teleport to="head">
+
+        <head http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; frame-src 'self'; frame-ancestors 'self' https://accounts.google.com/ https://drive.google.com">
+        </head>
+    </Teleport>
     <div id="app">
         <v-card>
             <v-layout>
