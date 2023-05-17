@@ -1,11 +1,15 @@
 <template>
     <div id="container">
+        <div id="titol">
+            <h1 v-if="isAdmin">Missatges rebuts</h1>
+            <h1 v-else>Missatges enviats</h1>
+        </div>
         <DataTable v-model:filters="filters" v-model:expandedRows="cosMissatge" :value="missatges" dataKey="id" paginator
             :rows="10" sortField="data" :sortOrder="1" removableSort :loading="loading" tableStyle="min-width: 50rem"
             :metaKeySelection=false selectionMode="single" v-model:selection="selectedMessage" @rowExpand="onRowExpand"
             :globalFilterFields="['data']">
-            <template #paginatorstart>
-                <div class="actions">
+            <template #header>
+                <div id="actions">
                     <CrearMissatgeComp @createdUser='postMessage' />
                 </div>
             </template>
@@ -184,8 +188,18 @@ export default {
 </script>
 
 <style scoped>
+#titol {
+    margin-bottom: 20px;
+}
+
 #container {
-    margin: 50px 50px 0 50px;
+    margin: 30px 50px 0 50px;
     min-height: 600px;
+}
+
+#actions {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
 }
 </style>
