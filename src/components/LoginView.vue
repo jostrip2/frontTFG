@@ -46,7 +46,8 @@ export default {
                             id: response.data.id,
                             username: this.user.username,
                             token: response.data.token,
-                            rol: response.data.rol
+                            rol: response.data.rol,
+                            fisio: response.data.fisio
                         }
                         this.setUser(user)
                         this.redirect()
@@ -64,6 +65,7 @@ export default {
             sessionStorage.setItem('username', user.username)
             sessionStorage.setItem('rol', user.rol)
             sessionStorage.setItem('token', user.token)
+            sessionStorage.setItem('fisio', JSON.stringify(user.fisio))
             this.$emit('loggedUser', commonMethods.isAdmin())
         },
 

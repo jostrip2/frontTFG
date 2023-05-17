@@ -17,9 +17,11 @@
                         <p v-if="isAdmin || isAdminSession">|</p>
                         <v-btn v-if="isAdmin || isAdminSession" :to="{ name: 'VideosView' }"
                             prepend-icon="mdi-video">Videos</v-btn>
+                        <v-btn v-if="!isAdmin && !isAdminSession" :to="{ name: 'AssignacionsClientView' }"
+                            prepend-icon="mdi-video">Videos</v-btn>
                     </div>
                     <div id="barRigth">
-                        <v-btn prepend-icon="mdi-email">Missatges</v-btn>
+                        <v-btn prepend-icon="mdi-email" :to="{ name: 'MissatgesView' }">Missatges</v-btn>
                         <p>|</p>
                         <v-btn @click="veurePerfil" prepend-icon="mdi-account-details">Perfil</v-btn>
                         <p>|</p>

@@ -4,6 +4,7 @@ import AssignacionsClientView from '../components/assignacionsClient/Assignacion
 import UsuarisView from '../components/usuarisAdmin/UsuarisView'
 import VideosView from '../components/videosAdmin/VideosView'
 import AssignacionsView from '../components/assignacionsAdmin/AssignacionsView'
+import MissatgesView from '../components/missatges/MissatgesView'
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     path: '/assignacions',
     name: "AssignacionsView",
     component: AssignacionsView
+  },
+  {
+    path: '/missatges',
+    name: "MissatgesView",
+    component: MissatgesView
   }
 ]
 
