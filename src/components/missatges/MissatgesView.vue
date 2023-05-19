@@ -18,9 +18,9 @@
             <PColumn expander style="width: 1rem" />
             <PColumn field="titol" header="Titol" style="width: 200px;"></PColumn>
             <PColumn field="data" sortable header="Dia" style="width: 200px;"></PColumn>
-            <PColumn v-if="isAdmin" field="emissor" header="Emissor" style="width: 200px;"></PColumn>
+            <PColumn v-if="isAdmin" field="emissor.nomComplet" header="Emissor" style="width: 200px;"></PColumn>
             <PColumn v-else field="receptor.nomComplet" header="Enviat a" style="width: 200px;"></PColumn>
-            <PColumn field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
+            <PColumn v-if="isAdmin" field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
                 <template #body="{ data }">
                     <v-icon v-if="data.llegit" color="green"> mdi-check-circle-outline </v-icon>
                     <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
