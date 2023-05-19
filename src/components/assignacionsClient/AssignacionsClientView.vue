@@ -7,7 +7,6 @@
                 <CalendarViewHeader :header-props="headerProps" @input="setShowDate" />
             </template>
         </CalendarView>
-        <p>Nota: quan hagi acabat de fer els exercicis del dia, pot enviar un missatge al seu fisioterapeuta</p>
     </div>
     <div>
         <v-dialog v-model="showVideo" persistent width="unset">

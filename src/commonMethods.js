@@ -15,6 +15,10 @@ function getLoggedUserId() {
     return sessionStorage.getItem('userId')
 }
 
+function getLoggedUsername() {
+    return sessionStorage.getItem('username')
+}
+
 function getUserFisio() {
     return JSON.parse(sessionStorage.getItem('fisio'))
 }
@@ -24,5 +28,6 @@ export default {
     isAdmin,
     isAuthenticated,
     getLoggedUserId,
+    getLoggedUsername,
     getUserFisio
 }

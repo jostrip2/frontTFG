@@ -5,6 +5,7 @@ import UsuarisView from '../components/usuarisAdmin/UsuarisView'
 import VideosView from '../components/videosAdmin/VideosView'
 import AssignacionsView from '../components/assignacionsAdmin/AssignacionsView'
 import MissatgesView from '../components/missatges/MissatgesView'
+import PerfilView from '../components/PerfilView'
 
 const routes = [
   {
@@ -40,7 +41,12 @@ const routes = [
     path: '/missatges',
     name: "MissatgesView",
     component: MissatgesView
-  }
+  },
+  {
+    path: '/perfil',
+    name: "PerfilView",
+    component: PerfilView
+  },
 ]
 
 const router = createRouter({

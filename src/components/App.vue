@@ -23,7 +23,7 @@
                     <div id="barRigth">
                         <v-btn prepend-icon="mdi-email" :to="{ name: 'MissatgesView' }">Missatges</v-btn>
                         <p>|</p>
-                        <v-btn @click="veurePerfil" prepend-icon="mdi-account-details">Perfil</v-btn>
+                        <v-btn prepend-icon="mdi-account-details" :to="{ name: 'PerfilView' }">Perfil</v-btn>
                         <p>|</p>
                         <v-btn @click="logout" prepend-icon="mdi-power">Tancar sessió</v-btn>
                     </div>
