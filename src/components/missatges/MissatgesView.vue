@@ -4,39 +4,41 @@
             <h1 v-if="isAdmin">Missatges rebuts</h1>
             <h1 v-else>Missatges enviats</h1>
         </div>
-        <DataTable v-model:filters="filters" v-model:expandedRows="cosMissatge" :value="missatges" dataKey="id" paginator
-            :rows="10" sortField="data" :sortOrder="1" removableSort :loading="loading" tableStyle="min-width: 50rem"
-            :metaKeySelection=false selectionMode="single" v-model:selection="selectedMessage" @rowExpand="onRowExpand"
-            :globalFilterFields="['data']">
-            <template #header>
-                <div id="actions">
-                    <CrearMissatgeComp @createdUser='postMessage' />
-                </div>
-            </template>
-            <template #empty> No s'han trobat missatges. </template>
-            <template #loading> Carregant missatges... </template>
-            <PColumn expander style="width: 1rem" />
-            <PColumn field="titol" header="Titol" style="width: 200px;"></PColumn>
-            <PColumn field="data" sortable header="Dia" style="width: 200px;"></PColumn>
-            <PColumn v-if="isAdmin" field="emissor.nomComplet" header="Emissor" style="width: 200px;"></PColumn>
-            <PColumn v-else field="receptor.nomComplet" header="Enviat a" style="width: 200px;"></PColumn>
-            <PColumn v-if="isAdmin" field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
-                <template #body="{ data }">
-                    <v-icon v-if="data.llegit" color="green"> mdi-check-circle-outline </v-icon>
-                    <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
+        <div id="messagesTable">
+            <DataTable v-model:filters="filters" v-model:expandedRows="cosMissatge" :value="missatges" dataKey="id"
+                paginator :rows="10" sortField="data" :sortOrder="1" removableSort :loading="loading"
+                tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+                v-model:selection="selectedMessage" @rowExpand="onRowExpand" :globalFilterFields="['data']">
+                <template #header v-if="!isAdmin">
+                    <div id="actions">
+                        <CrearMissatgeComp @createdUser='postMessage' />
+                    </div>
                 </template>
-                <template #filter="{ filterModel }">
-                    <label for="realitzat-filter" class="font-bold"> Realitzat </label>
-                    <TriStateCheckbox v-model="filterModel.value" inputId="realitzat-filter" />
+                <template #empty> No s'han trobat missatges. </template>
+                <template #loading> Carregant missatges... </template>
+                <PColumn expander style="width: 1rem" />
+                <PColumn field="titol" header="Titol" style="width: 200px;"></PColumn>
+                <PColumn field="data" sortable header="Dia" style="width: 200px;"></PColumn>
+                <PColumn v-if="isAdmin" field="emissor.nomComplet" header="Emissor" style="width: 200px;"></PColumn>
+                <PColumn v-else field="receptor.nomComplet" header="Enviat a" style="width: 200px;"></PColumn>
+                <PColumn v-if="isAdmin" field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
+                    <template #body="{ data }">
+                        <v-icon v-if="data.llegit" color="green"> mdi-check-circle-outline </v-icon>
+                        <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <label for="realitzat-filter" class="font-bold"> Realitzat </label>
+                        <TriStateCheckbox v-model="filterModel.value" inputId="realitzat-filter" />
+                    </template>
+                </PColumn>
+                <template #expansion="slotProps">
+                    <div class="p-3">
+                        <h5>Missatge</h5>
+                        <p>{{ slotProps.data.missatge }}</p>
+                    </div>
                 </template>
-            </PColumn>
-            <template #expansion="slotProps">
-                <div class="p-3">
-                    <h5>Missatge</h5>
-                    <p>{{ slotProps.data.missatge }}</p>
-                </div>
-            </template>
-        </DataTable>
+            </DataTable>
+        </div>
     </div>
 
 
@@ -201,5 +203,9 @@ export default {
     display: flex;
     margin-left: auto;
     margin-right: 0;
+}
+
+#messagesTable {
+    border: 1px solid rgb(221, 221, 221);
 }
 </style>
