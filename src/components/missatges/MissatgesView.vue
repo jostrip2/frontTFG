@@ -142,7 +142,7 @@ export default {
         },
 
         onRowExpand(event) {
-            if (!event.data.llegit) {
+            if (this.isAdmin && !event.data.llegit) {
                 const url = process.env.VUE_APP_APIURL + "/missatges"
                 this.axios.patch(url, { id: event.data.id, llegit: true }, {
                     headers: {

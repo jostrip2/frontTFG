@@ -68,10 +68,6 @@ export default {
 
         setIsAdmin(bool) {
             this.isAdmin = bool
-        },
-
-        veurePerfil() {
-
         }
     },
 }

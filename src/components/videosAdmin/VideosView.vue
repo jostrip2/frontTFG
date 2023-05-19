@@ -111,8 +111,8 @@ export default {
     },
 
     mounted() {
-        // si no esta autenticat o està autenticat pero no es admin, no pot accedir a la pàgina
-        if (!commonMethods.isAuthenticated() || (commonMethods.isAuthenticated() && !commonMethods.isAdmin())) {
+        // si no esta autenticat o no es admin, no pot accedir a la pàgina
+        if (!commonMethods.isAuthenticated() || !commonMethods.isAdmin()) {
             this.$router.push("/")
         }
         else {

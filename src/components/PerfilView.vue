@@ -260,7 +260,12 @@ export default {
     },
 
     mounted() {
-        this.getLoggedUser();
+        if (!commonMethods.isAuthenticated()) {
+            this.$router.push("/");
+        }
+        else {
+            this.getLoggedUser();
+        }
     }
 
 }
