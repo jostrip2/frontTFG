@@ -19,16 +19,17 @@
                 <v-card-text>
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
-                            <v-text-field v-model="propUser.nom" label="Nom" type="text" clearable required></v-text-field>
-                            <v-text-field v-model="propUser.cognoms" label="Cognoms" type="text" clearable
-                                required></v-text-field>
+                            <v-text-field v-model="propUser.nom" label="Nom" type="text" clearable required
+                                hide-details></v-text-field>
+                            <v-text-field v-model="propUser.cognoms" label="Cognoms" type="text" clearable required
+                                hide-details></v-text-field>
                             <v-text-field v-model="propUser.email" label="Email" type="email" :rules="emailRules" clearable
-                                required></v-text-field>
+                                required hide-details></v-text-field>
                             <v-text-field v-model="propUser.numMobil" label="Mòbil" type="numbers" :rules="mobilRules"
-                                clearable></v-text-field>
+                                clearable hide-details></v-text-field>
                             <v-select v-if="propUser.rol == 'Client'" v-model="propUser.Fisioterapeuta.nomComplet"
                                 :items="fisios" item-title="nom" item-value="id" label="Fisioterapeuta" :rules="rolRules"
-                                return-object></v-select>
+                                return-object hide-details></v-select>
                         </v-form>
                     </v-container>
                 </v-card-text>

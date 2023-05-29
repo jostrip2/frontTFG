@@ -20,12 +20,12 @@
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
                             <v-text-field v-model="this.video.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
-                                required></v-text-field>
+                                required hide-details></v-text-field>
                             <v-text-field v-model="this.video.descripcio" label="Descripcio *" type="text"
-                                :rules="noBuitRules" clearable required></v-text-field>
+                                :rules="noBuitRules" clearable required hide-details></v-text-field>
                             <v-text-field v-model="this.linkVideo" label="Enllaç de Google Drive *" type="text"
-                                :rules="linkRules" clearable required></v-text-field>
-                            <v-select v-model="this.video.areaExercici" :items="arees" label="Area"></v-select>
+                                :rules="linkRules" clearable required hide-details></v-text-field>
+                            <v-select v-model="this.video.areaExercici" :items="arees" label="Area" hide-details></v-select>
                         </v-form>
                     </v-container>
                     <small style="padding-left: 12px; color: red;">* Camp necessari</small>
@@ -67,7 +67,7 @@ export default {
                 nom: '',
                 codi: '',
                 descripcio: '',
-                areaExercici: ''
+                areaExercici: 'Braços'
             },
             linkVideo: '',
             arees: ['Braços', 'Tronc', 'Cames', 'Coll'],

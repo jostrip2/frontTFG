@@ -20,12 +20,12 @@
                     <v-container>
                         <v-form fast-fail @submit.prevent ref="form">
                             <v-text-field v-model="propVideo.nom" label="Nom *" type="text" :rules="noBuitRules" clearable
-                                required></v-text-field>
+                                required hide-details></v-text-field>
                             <v-text-field v-model="propVideo.descripcio" label="Descripcio *" type="text"
-                                :rules="noBuitRules" clearable required></v-text-field>
+                                :rules="noBuitRules" clearable required hide-details></v-text-field>
                             <v-text-field v-model="linkVideo" label="Enllaç de Google Drive *" type="text"
-                                :rules="linkRules" clearable required></v-text-field>
-                            <v-select v-model="propVideo.areaExercici" :items="arees" label="Area"></v-select>
+                                :rules="linkRules" clearable required hide-details></v-text-field>
+                            <v-select v-model="propVideo.areaExercici" :items="arees" label="Area" hide-details></v-select>
                         </v-form>
                     </v-container>
                 </v-card-text>
