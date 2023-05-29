@@ -101,18 +101,22 @@ export default {
                     headers: {
                         'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                     }
-                })
-                    .then(response => {
-                        if (response.status == 200) {
-                            const message = 'Video modificat correctament'
-                            this.$emit('editedVideo', message)
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        const message = "S'ha produit un error al modificar un video"
+                }).then(response => {
+                    if (response.status == 200) {
+                        const message = 'Video modificat correctament'
                         this.$emit('editedVideo', message)
-                    })
+                    }
+                    else {
+                        if (response.data.code == 1) {
+                            const message = "Ja existeix un video amb l'enllaç introduït";
+                            this.$emit('editedVideo', message);
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    const message = "S'ha produit un error al modificar un video"
+                    this.$emit('editedVideo', message)
+                })
             }
             catch (error) {
                 console.log(error);
