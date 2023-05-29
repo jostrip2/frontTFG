@@ -23,7 +23,7 @@
                     <EditarUserComp v-if="userIsSelected" :selectedUser="selectedUser" :allFisios="getFisios"
                         :allUsers="allUsers" @editedUser="postUsuari" />
                     <EliminarUserComp v-if="userIsSelected" :selectedUser="selectedUser" @deletedUser="postUsuari" />
-                    <VeureAssignacionsComp v-if="userIsSelected" :selectedUser="selectedUser" />
+                    <VeureAssignacionsComp v-if="userIsSelected && esClient" :selectedUser="selectedUser" />
                 </div>
             </template>
             <template #empty> No s'han trobat usuaris. </template>
@@ -151,6 +151,10 @@ export default {
 
         userIsSelected() {
             return this.selectedUser != null
+        },
+
+        esClient() {
+            return this.selectedUser.rol == 'Client'
         }
     },
 
