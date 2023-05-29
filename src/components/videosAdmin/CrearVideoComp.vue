@@ -97,30 +97,31 @@ export default {
 
         afegirUsuari() {
             const url = process.env.VUE_APP_APIURL + "/videos";
-            try {
-                this.video.codi = this.getCodiVideo;
-                this.axios.post(url, this.video, {
-                    headers: {
-                        'Authorization': 'Bearer ' + commonMethods.getSessionToken()
+            this.video.codi = this.getCodiVideo;
+            this.axios.post(url, this.video, {
+                headers: {
+                    'Authorization': 'Bearer ' + commonMethods.getSessionToken()
+                }
+            })
+                .then(response => {
+                    if (response.status == 201) {
+                        const message = 'Video creat correctament';
+                        this.$emit('createdVideo', message);
+                        this.closeDialog();
+                    }
+                    else {
+                        if (response.data.code == 1) {
+                            const message = "El video ja existeix";
+                            this.$emit('createdVideo', message);
+                        }
                     }
                 })
-                    .then(response => {
-                        if (response.status == 201) {
-                            const message = 'Video creat correctament'
-                            this.$emit('createdVideo', message)
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Error:' + error);
-                        const message = "S'ha produit un error a l'afegir un video"
-                        this.$emit('createdVideo', message)
-                    })
-            } catch (error) {
-                console.log('Error:' + error);
-                const message = "S'ha produit un error a l'afegir un video"
-                this.$emit('createdVideo', message)
-            }
-            this.closeDialog()
+                .catch(error => {
+                    console.log(error);
+                    const message = "S'ha produit un error a l'afegir un video";
+                    this.$emit('createdVideo', message);
+                    this.closeDialog();
+                })
         },
 
         showDialog(bool) {
