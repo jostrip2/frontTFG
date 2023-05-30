@@ -18,10 +18,10 @@
                 <v-text-field v-if="!isAdmin" v-model="nomCompletFisio" label="Fisioterapeuta" readonly></v-text-field>
             </v-form>
             <v-form v-if="isEditPass" fast-fail @submit.prevent ref="formPass">
-                <v-text-field v-model="password" label="Contrasenya" type="password" :rules="passRules" clearable
+                <v-text-field v-model="password" label="Contrasenya actual" type="password" :rules="passRules" clearable
                     required></v-text-field>
-                <v-text-field v-model="password2" label="Repetir contrasenya" type="password" :rules="passRules" clearable
-                    required></v-text-field>
+                <v-text-field v-model="password2" label="Repetir contrasenya actual" type="password" :rules="passRules"
+                    clearable required></v-text-field>
                 <v-text-field v-model="newPassword" label="Nova contrasenya" type="password" :rules="passRules" clearable
                     required></v-text-field>
             </v-form>
@@ -30,7 +30,7 @@
                     Editar
                 </v-btn>
                 <v-btn v-if="!isEdit && !isEditPass" color="blue-darken-1" variant="text" @click="setCanviarPass">
-                    Editar contrasenya
+                    Canviar contrasenya
                 </v-btn>
                 <v-btn v-if="isEdit || isEditPass" color="blue-darken-1" variant="text" @click="cancelarEdit">
                     Cancelar
