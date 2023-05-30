@@ -22,7 +22,7 @@
                 <div id="videoDescription">
                     <h3>{{ selectedVideo.nom }}</h3>
                     <p> {{ selectedVideo.descripcio }}</p>
-                    <v-switch v-model="selectedAssign.realitzat" :label="`Video realitzat: ${textRealitzacio}`"
+                    <v-switch v-model="selectedAssign.realitzat" :label="`Exercici realitzat: ${textRealitzacio}`"
                         @change="marcarRealitzacio" hide-details inset></v-switch>
                 </div>
                 <v-card-actions>
@@ -79,16 +79,14 @@ export default {
                     headers: {
                         "Authorization": "Bearer " + commonMethods.getSessionToken()
                     }
-                })
-                    .then(response => {
-                        if (response.status == 200 && response.data) {
-                            this.setItems(response.data);
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.showMessage(error);
-                    });
+                }).then(response => {
+                    if (response.status == 200 && response.data) {
+                        this.setItems(response.data);
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    this.showMessage(error);
+                });
             }
         },
 
@@ -119,11 +117,10 @@ export default {
                 headers: {
                     'Authorization': 'Bearer ' + commonMethods.getSessionToken()
                 }
-            })
-                .catch(error => {
-                    console.log(error);
-                    this.showMessage(error);
-                });
+            }).catch(error => {
+                console.log(error);
+                this.showMessage(error);
+            });
         },
 
         getLoggedUser() {
