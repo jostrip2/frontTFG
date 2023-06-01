@@ -1,15 +1,15 @@
 <template>
     <div id="container">
         <div id="titol">
-            <h1 v-if="isAdmin">Missatges rebuts</h1>
+            <h1 v-if="isFisio">Missatges rebuts</h1>
             <h1 v-else>Missatges enviats</h1>
         </div>
         <div id="messagesTable">
             <DataTable v-model:filters="filters" v-model:expandedRows="cosMissatge" :value="missatges" dataKey="id"
-                paginator :rows="10" sortField="data" :sortOrder="1" removableSort :loading="loading"
+                paginator :rows="5" sortField="data" :sortOrder="1" removableSort :loading="loading"
                 tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
                 v-model:selection="selectedMessage" @rowExpand="onRowExpand" :globalFilterFields="['data']">
-                <template #header v-if="!isAdmin">
+                <template #header v-if="!isFisio">
                     <div id="actions">
                         <CrearMissatgeComp @createdUser='postMessage' />
                     </div>
@@ -19,9 +19,9 @@
                 <PColumn expander style="width: 1rem" />
                 <PColumn field="titol" header="Titol" style="width: 200px;"></PColumn>
                 <PColumn field="data" sortable header="Dia" style="width: 200px;"></PColumn>
-                <PColumn v-if="isAdmin" field="emissor.nomComplet" header="Emissor" style="width: 200px;"></PColumn>
+                <PColumn v-if="isFisio" field="emissor.nomComplet" header="Emissor" style="width: 200px;"></PColumn>
                 <PColumn v-else field="receptor.nomComplet" header="Enviat a" style="width: 200px;"></PColumn>
-                <PColumn v-if="isAdmin" field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
+                <PColumn v-if="isFisio" field="llegit" header="Llegit" dataType="boolean" style="width: 200px;">
                     <template #body="{ data }">
                         <v-icon v-if="data.llegit" color="green"> mdi-check-circle-outline </v-icon>
                         <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
@@ -68,7 +68,7 @@ export default {
     data() {
         return {
             missatges: [],
-            isAdmin: commonMethods.isAdmin(),
+            isFisio: commonMethods.isFisio(),
             cosMissatge: [],
             selectedMessage: null,
             message: '',
@@ -117,7 +117,7 @@ export default {
         },
 
         getMessages() {
-            if (this.isAdmin) {
+            if (this.isFisio) {
                 this.getMessagesReceptor();
             }
             else {
@@ -142,7 +142,7 @@ export default {
         },
 
         onRowExpand(event) {
-            if (this.isAdmin && !event.data.llegit) {
+            if (this.isFisio && !event.data.llegit) {
                 const url = process.env.VUE_APP_APIURL + "/missatges"
                 this.axios.patch(url, { id: event.data.id, llegit: true }, {
                     headers: {

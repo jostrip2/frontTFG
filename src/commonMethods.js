@@ -7,6 +7,14 @@ function isAdmin() {
     return sessionStorage.getItem('rol') == 'Administrador'
 }
 
+function isFisio() {
+    return sessionStorage.getItem('rol') == 'Fisioterapeuta'
+}
+
+function isClient() {
+    return sessionStorage.getItem('rol') == 'Client'
+}
+
 function isAuthenticated() {
     return this.getSessionToken() != null
 }
@@ -29,5 +37,7 @@ export default {
     isAuthenticated,
     getLoggedUserId,
     getLoggedUsername,
-    getUserFisio
+    getUserFisio,
+    isFisio,
+    isClient
 }

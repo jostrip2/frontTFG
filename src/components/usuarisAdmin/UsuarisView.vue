@@ -1,40 +1,51 @@
 <template>
-    <div class="list">
-        <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="10" removableSort
-            :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
-            v-model:selection="selectedUser" :globalFilterFields="['nomComplet', 'username']">
-            <template #header>
-                <div class="search">
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
-                        <InputText v-model="filters['global'].value" placeholder="Cercar usuari" />
-                    </span>
-                    <div class="checks">
-                        <v-checkbox v-model="this.checkAdmin" label="Administrador" @change="searchUser"
-                            hide-details></v-checkbox>
-                        <v-checkbox v-model="this.checkClient" label="Client" @change="searchUser"
-                            hide-details></v-checkbox>
+    <div id="container">
+        <h1 id="titol">Usuaris registrats</h1>
+        <div class="list">
+            <DataTable v-model:filters="filters" :value="users" dataKey="id" paginator :rows="5" removableSort
+                :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+                v-model:selection="selectedUser" :globalFilterFields="['nomComplet', 'username']">
+                <template #header>
+                    <div class="search">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText v-model="filters['global'].value" placeholder="Cercar usuari" />
+                        </span>
+                        <div v-if="isAdmin" class="checks">
+                            <v-checkbox v-model="checkAdmin" label="Administrador" @change="searchUser"
+                                hide-details></v-checkbox>
+                            <v-checkbox v-model="checkClient" label="Client" @change="searchUser" hide-details></v-checkbox>
+                            <v-checkbox v-model="checkFisio" label="Fisioterapeuta" @change="searchUser"
+                                hide-details></v-checkbox>
+                        </div>
                     </div>
-                </div>
-            </template>
-            <template #paginatorstart>
-                <div class="actions">
-                    <CrearUserComp :allFisios="getFisios" :allUsers="allUsers" @createdUser='postUsuari' />
-                    <EditarUserComp v-if="userIsSelected" :selectedUser="selectedUser" :allFisios="getFisios"
-                        :allUsers="allUsers" @editedUser="postUsuari" />
-                    <EliminarUserComp v-if="userIsSelected" :selectedUser="selectedUser" @deletedUser="postUsuari" />
-                    <VeureAssignacionsComp v-if="userIsSelected && esClient" :selectedUser="selectedUser" />
-                </div>
-            </template>
-            <template #empty> No s'han trobat usuaris. </template>
-            <template #loading> Carregant usuaris... </template>
-            <PColumn field="nomComplet" sortable header="Nom" style="width: 200px;"></PColumn>
-            <PColumn field="username" sortable header="Username" style="width: 200px;"></PColumn>
-            <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
-            <PColumn field="numMobil" header="Mòbil" style="width: 200px;"></PColumn>
-            <PColumn field="rol" header="Rol" style="width: 200px;"></PColumn>
-            <PColumn field="Fisioterapeuta.nomComplet" header="Fisioterapeuta" style="width: 200px;"></PColumn>
-        </DataTable>
+                </template>
+                <template #paginatorstart>
+                    <div class="actions">
+                        <CrearUserComp v-if="isAdmin" :allFisios="getFisios" :allUsers="allUsers"
+                            @createdUser='postUsuari' />
+                        <EditarUserComp v-if="isAdmin && userIsSelected" :selectedUser="selectedUser" :allFisios="getFisios"
+                            :allUsers="allUsers" @editedUser="postUsuari" />
+                        <EliminarUserComp v-if="isAdmin && userIsSelected" :selectedUser="selectedUser"
+                            @deletedUser="postUsuari" />
+                        <VeureAssignacionsComp v-if="isFisio && userIsSelected" :selectedUser="selectedUser" />
+                    </div>
+                </template>
+                <template #empty> No s'han trobat usuaris. </template>
+                <template #loading> Carregant usuaris... </template>
+                <PColumn field="nomComplet" sortable header="Nom" style="width: 200px;"></PColumn>
+                <PColumn field="username" sortable header="Username" style="width: 200px;"></PColumn>
+                <PColumn field="email" header="Email" style="width: 200px;"></PColumn>
+                <PColumn field="numMobil" header="Mòbil" style="width: 200px;"></PColumn>
+                <PColumn field="rol" header="Rol" style="width: 200px;"></PColumn>
+                <PColumn header="Fisioterapeuta" style="width: 200px;">
+                    <template #body="{ data }">
+                        <span v-if="data.rol != 'Fisioterapeuta' && data.rol != 'Administrador'">{{
+                            data.Fisioterapeuta.nomComplet }}</span>
+                    </template>
+                </PColumn>
+            </DataTable>
+        </div>
     </div>
     <v-snackbar v-model="showSnack">
         {{ message }}
@@ -71,6 +82,7 @@ export default {
             users: [],
             checkAdmin: false,
             checkClient: false,
+            checkFisio: false,
             showSnack: false,
             message: '',
             selectedUser: null,
@@ -83,7 +95,11 @@ export default {
     methods: {
         getUsers() {
             this.loading = true
-            const url = process.env.VUE_APP_APIURL + "/users";
+            let url = process.env.VUE_APP_APIURL + "/users";
+
+            if (commonMethods.isFisio())
+                url += "/clients/" + commonMethods.getLoggedUserId();
+
             this.axios.get(url, {
                 headers: {
                     'Authorization': 'Bearer ' + commonMethods.getSessionToken()
@@ -119,7 +135,8 @@ export default {
         checkRol(rol) {
             const rolIsAdmin = rol == 'Administrador'
             const rolIsClient = rol == 'Client'
-            return (rolIsAdmin && this.checkAdmin) || (rolIsClient && this.checkClient) || (!this.checkAdmin && !this.checkClient)
+            const rolIsFisio = rol == 'Fisioterapeuta'
+            return (rolIsAdmin && this.checkAdmin) || (rolIsClient && this.checkClient) || (rolIsFisio && this.checkFisio) || (!this.checkAdmin && !this.checkClient && !this.checkFisio)
         },
 
         refresh() {
@@ -155,12 +172,20 @@ export default {
 
         esClient() {
             return this.selectedUser.rol == 'Client'
+        },
+
+        isAdmin() {
+            return commonMethods.isAdmin();
+        },
+
+        isFisio() {
+            return commonMethods.isFisio();
         }
     },
 
     mounted() {
         // si no esta autenticat o  no es admin, no pot accedir a la pàgina
-        if (!commonMethods.isAuthenticated() || !commonMethods.isAdmin()) {
+        if (!commonMethods.isAuthenticated() || commonMethods.isClient()) {
             this.$router.push("/")
         }
         else {
@@ -171,6 +196,16 @@ export default {
 </script>
 
 <style scoped>
+#container {
+    margin: 30px 50px 0 50px;
+    min-height: 600px;
+}
+
+#titol {
+    margin-left: 50px;
+    text-align: start;
+}
+
 .search {
     display: flex;
     margin-left: 0;
@@ -187,7 +222,7 @@ export default {
 }
 
 .list {
-    margin: 50px 50px 0 50px;
+    margin: 10px 50px 0 50px;
     border: 1px solid rgb(221, 221, 221);
 }
 

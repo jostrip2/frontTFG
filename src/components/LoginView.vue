@@ -70,7 +70,7 @@ export default {
         },
 
         redirect() {
-            if (commonMethods.isAdmin()) {
+            if (commonMethods.isAdmin() || commonMethods.isFisio()) {
                 this.$router.push("/users")
             }
             else {

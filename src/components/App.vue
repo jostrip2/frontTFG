@@ -12,13 +12,14 @@
                     <div id="barLeft">
                         <v-toolbar-title id="title">FisioApp</v-toolbar-title>
 
-                        <v-btn v-if="isAdmin || isAdminSession" :to="{ name: 'UsuarisView' }" prepend-icon="mdi-account">
+                        <v-btn v-if="isAdmin || isAdminSession || isFisio" :to="{ name: 'UsuarisView' }"
+                            prepend-icon="mdi-account">
                             Usuaris</v-btn>
-                        <p v-if="isAdmin || isAdminSession">|</p>
-                        <v-btn v-if="isAdmin || isAdminSession" :to="{ name: 'VideosView' }"
+                        <p v-if="isAdmin || isAdminSession || isFisio">|</p>
+                        <v-btn v-if="isAdmin || isAdminSession || isFisio" :to="{ name: 'VideosView' }"
                             prepend-icon="mdi-video">Videos</v-btn>
-                        <v-btn v-if="!isAdmin && !isAdminSession" :to="{ name: 'AssignacionsClientView' }"
-                            prepend-icon="mdi-video">Videos</v-btn>
+                        <v-btn v-if="isClient" :to="{ name: 'AssignacionsClientView' }"
+                            prepend-icon="mdi-video">Exercicis</v-btn>
                     </div>
                     <div id="barRigth">
                         <v-btn prepend-icon="mdi-email" :to="{ name: 'MissatgesView' }">Missatges</v-btn>
@@ -58,6 +59,14 @@ export default {
 
         isAdminSession() {
             return commonMethods.isAdmin()
+        },
+
+        isFisio() {
+            return commonMethods.isFisio()
+        },
+
+        isClient() {
+            return commonMethods.isClient()
         }
     },
     methods: {

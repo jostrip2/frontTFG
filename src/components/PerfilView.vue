@@ -1,8 +1,6 @@
 <template>
     <div id="container">
-        <div id="titol">
-            <h1>{{ titol }}</h1>
-        </div>
+        <h1 id="titol">{{ titol }}</h1>
         <div class="formInfoUser">
             <v-form v-if="!isEditPass" fast-fail @submit.prevent ref="form">
                 <v-text-field v-model="username" label="Nom d'usuari" type="text" :rules="nameRules" :clearable="isEdit"
@@ -15,7 +13,7 @@
                     :required="isEdit" :readonly="!isEdit"></v-text-field>
                 <v-text-field v-model="numMobil" label="Num. Mòbil" type="numbers" :rules="mobilRules" :clearable="isEdit"
                     :readonly="!isEdit"></v-text-field>
-                <v-text-field v-if="!isAdmin" v-model="nomCompletFisio" label="Fisioterapeuta" readonly></v-text-field>
+                <v-text-field v-if="isClient" v-model="nomCompletFisio" label="Fisioterapeuta" readonly></v-text-field>
             </v-form>
             <v-form v-if="isEditPass" fast-fail @submit.prevent ref="formPass">
                 <v-text-field v-model="password" label="Contrasenya actual" type="password" :rules="passRules" clearable
@@ -73,7 +71,7 @@ export default {
             email: '',
             numMobil: '',
             fisio: commonMethods.getUserFisio(),
-            isAdmin: commonMethods.isAdmin(),
+            isClient: commonMethods.isClient(),
             isEdit: false,
             isEditPass: false,
             snack: false,

@@ -1,7 +1,7 @@
 <template>
     <div class="list">
         <h2 id="whichUser" v-if="selectedUser != null">Videos assignats a {{ selectedUser.nomComplet }}</h2>
-        <DataTable v-model:filters="filters" :value="getVideoInfo" dataKey="id" paginator :rows="10" removableSort
+        <DataTable v-model:filters="filters" :value="getVideoInfo" dataKey="id" paginator :rows="5" removableSort
             :loading="loading" filterDisplay="menu" tableStyle="min-width: 50rem" :metaKeySelection=false
             selectionMode="single" v-model:selection="selectedAssign" :globalFilterFields="['nom', 'descripcio', 'dia']">
             <template #header>
@@ -27,7 +27,7 @@
             <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
             <PColumn field="areaExercici" header="Area" style="width: 100px;"></PColumn>
             <PColumn field="dia" header="Dia" style="width: 100px;"></PColumn>
-            <PColumn field="realitzat" header="Realitzat" dataType="boolean" style="width: 200px;">
+            <PColumn header="Realitzat" dataType="boolean" style="width: 200px;">
                 <template #body="{ data }">
                     <v-icon v-if="data.realitzat" color="green"> mdi-check-circle-outline </v-icon>
                     <v-icon v-else color="red"> mdi-close-circle-outline </v-icon>
@@ -145,7 +145,7 @@ export default {
 
     mounted() {
         // si no esta autenticat o no es admin, no pot accedir a la pàgina
-        if (!commonMethods.isAuthenticated() || !commonMethods.isAdmin()) {
+        if (!commonMethods.isAuthenticated() || !commonMethods.isFisio()) {
             this.$router.push("/")
         }
         else {

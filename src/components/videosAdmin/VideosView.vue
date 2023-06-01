@@ -1,31 +1,35 @@
 <template>
-    <div class="list">
-        <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="10" removableSort
-            :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
-            v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio']">
-            <template #header>
-                <div class="search">
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
-                        <InputText v-model="filters['global'].value" placeholder="Cercar videos" />
-                    </span>
-                </div>
-            </template>
-            <template #paginatorstart>
-                <div class="actions">
-                    <CrearVideoComp @createdVideo='postActionVideo' />
-                    <VeureVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" />
-                    <EditarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" @editedVideo='postActionVideo' />
-                    <EliminarVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo"
-                        @deletedVideo='postActionVideo' />
-                </div>
-            </template>
-            <template #empty> No s'han trobat videos. </template>
-            <template #loading> Carregant videos... </template>
-            <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
-            <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
-            <PColumn field="areaExercici" header="Area" style="width: 200px;"></PColumn>
-        </DataTable>
+    <div id="container">
+        <h1 id="titol">Videos registrats</h1>
+        <div class="list">
+            <DataTable v-model:filters="filters" :value="videos" dataKey="id" paginator :rows="5" removableSort
+                :loading="loading" tableStyle="min-width: 50rem" :metaKeySelection=false selectionMode="single"
+                v-model:selection="selectedVideo" :globalFilterFields="['nom', 'descripcio']">
+                <template #header>
+                    <div class="search">
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search" />
+                            <InputText v-model="filters['global'].value" placeholder="Cercar videos" />
+                        </span>
+                    </div>
+                </template>
+                <template #paginatorstart>
+                    <div class="actions">
+                        <CrearVideoComp v-if="esAdmin" @createdVideo='postActionVideo' />
+                        <VeureVideoComp v-if="videoIsSelected" :selectedVideo="selectedVideo" />
+                        <EditarVideoComp v-if="esAdmin && videoIsSelected" :selectedVideo="selectedVideo"
+                            @editedVideo='postActionVideo' />
+                        <EliminarVideoComp v-if="esAdmin && videoIsSelected" :selectedVideo="selectedVideo"
+                            @deletedVideo='postActionVideo' />
+                    </div>
+                </template>
+                <template #empty> No s'han trobat videos. </template>
+                <template #loading> Carregant videos... </template>
+                <PColumn field="nom" sortable header="Nom" style="width: 200px;"></PColumn>
+                <PColumn field="descripcio" sortable header="Descripcio" style="width: 200px;"></PColumn>
+                <PColumn field="areaExercici" header="Area" style="width: 200px;"></PColumn>
+            </DataTable>
+        </div>
     </div>
     <v-snackbar v-model="showSnack">
         {{ message }}
@@ -59,6 +63,7 @@ export default {
         return {
             videos: [],
             selectedVideo: null,
+            esAdmin: commonMethods.isAdmin(),
             showSnack: false,
             message: '',
             loading: false,
@@ -111,8 +116,8 @@ export default {
     },
 
     mounted() {
-        // si no esta autenticat o no es admin, no pot accedir a la pàgina
-        if (!commonMethods.isAuthenticated() || !commonMethods.isAdmin()) {
+        // si no esta autenticat o no es admin ni fisio, no pot accedir a la pàgina
+        if (!commonMethods.isAuthenticated() || commonMethods.isClient()) {
             this.$router.push("/")
         }
         else {
@@ -123,6 +128,16 @@ export default {
 </script>
 
 <style scoped>
+#container {
+    margin: 30px 50px 0 50px;
+    min-height: 600px;
+}
+
+#titol {
+    margin-left: 50px;
+    text-align: start;
+}
+
 .search {
     display: flex;
     margin-left: 0;
@@ -135,7 +150,7 @@ export default {
 }
 
 .list {
-    margin: 50px 50px 0 50px;
+    margin: 10px 50px 0 50px;
     border: 1px solid rgb(221, 221, 221);
 }
 
