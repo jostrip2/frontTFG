@@ -3,8 +3,7 @@
         <h1 id="titol">{{ titol }}</h1>
         <div class="formInfoUser">
             <v-form v-if="!isEditPass" fast-fail @submit.prevent ref="form">
-                <v-text-field v-model="username" label="Nom d'usuari" type="text" :rules="nameRules" :clearable="isEdit"
-                    :required="isEdit" :readonly="!isEdit"></v-text-field>
+                <v-text-field v-model="username" label="Nom d'usuari" type="text" readonly></v-text-field>
                 <v-text-field v-model="nom" label="Nom" type="text" :rules="nameRules" :clearable="isEdit"
                     :required="isEdit" :readonly="!isEdit"></v-text-field>
                 <v-text-field v-model="cognoms" label="Cognoms" type="text" :rules="nameRules" :clearable="isEdit"
